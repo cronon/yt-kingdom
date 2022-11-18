@@ -10,7 +10,7 @@ Participants: me in the role of everybody. Potentially one more front- or backen
 Stakeholders: me as the developer and the main user, the ocassional people from the internet.
 
 Project Deliverables:
-An exe file with the app, published on github releases. Possible webapp version
+An exe file with the app, published on github releases. The app works on win11 and win 8. Better without ffmpeg installation. Possible webapp version.
 
 
 Project Risks: 

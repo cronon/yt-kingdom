@@ -1,0 +1,113 @@
+The user flow is the following: open the app, move files into the app or select them in a popup window - provide somehow files. Press generate maybe with some configs and in generates a video. User sees a progress bar showing how much time is left (or maybe show there ffmpeg output), to see that something happens at least. While the video is being generated, the app also generates the album description with chapters and timecodes. User can edit this description. Description can include a placeholder for song title. It may also be necessary to edit song titles because filenames are not usually beautiful. 
+The videos are generated, then the user presses upload button, everything is uploaded on Youtube and it shows you the links to the videos, playlist and your channel content maybe.
+
+
+Deliverables and work
+
+electron chrome
+	install react to electron ? 30m
+	prepare structure for back and front
+		how to require css files ? 10m
+		how to organize communication between client and node ? 30m
+common design with big mild-orange letters
+	spent 10m googling for a desktop design system 10m
+	choose and apply theme 15m
+	install it 15m
+	place all the elements on the screen 15m
+login to youtube button
+	code 30m
+	where does electron store creds? It will be tedious to log in each time the app reruns 30m
+generate videos
+	CRUD + sortable songs list
+		files datastructure 30m
+		add files 15m
+		read files mp3 1h ? - only some idea what to do about it
+		read files jpg/png 1h ? - only some idea what to do about it
+		sortable list 30m
+			if the design system doesn't have it, it can be taken from the priority table
+		editable list 30m
+		delete one and all 15m
+	"Generate" button
+		button 15m
+		install ffmpeg locally 15m
+		send command to ffmpeg 1h ? how to integrate with other programs in elector? with ffmpeg in js?
+	progress bar
+		make some meaning from ffmpeg output 1h ? at least see about which files it talks about
+		make better meaning from ffmpeg output 1h ? understand how much time left
+generate description
+	song description with template
+		textarea and preview 10m
+	album description with playlist with timecodes
+		textarea and preview 10m
+		calculate timecodes 15m
+
+upload to youtube
+	upload videos
+		upload button
+			start uploading 15m
+			make everything gray 10m
+		progressbar
+			code 15m
+		youtube permissions for bigger quota
+			ask youtube for the bigger quota ? 2h-2d 
+				read their requirements 10m
+				prepare papers ?
+				gain some courage ?
+	create youtube playlist
+		create playlist code 30m ? haven't tried it yet
+	success message
+		code 10m
+exe file
+	bundled code
+		run build 10m 
+		find out how to distrubute electron apps ? 20m
+		how to do updates ? 1h
+		preferably with ffmpeg included to the bundle
+			find out how to include everything into a single exe ? 20m
+	published to github
+		how to make releases in github ? 1h
+
+16h in total ~ 2d
++ 4d debugging = 6d
+
+Unknowns
+	install react to electron ? 30m
+	prepare structure for back and front
+		how to require css files ? 10m
+		how to organize communication between client and node ? 30m
+	where does electron store creds? It will be tedious to log in each time the app reruns 30m
+	read files mp3 1h ? - only some idea what to do about it
+	read files jpg/png 1h ? - only some idea what to do about it
+	send command to ffmpeg 1h ? how to integrate with other programs in elector? with ffmpeg in js?
+	make some meaning from ffmpeg output 1h ? at least see about which files it talks about
+	make better meaning from ffmpeg output 1h ? understand how much time left
+	find out how to distrubute electron apps ? 20m
+	how to do updates in electron app ? 1h
+	find out how to include everything into a single exe ? 20m
+	ask youtube for the bigger quota ? 2h-2d 
+	how to make releases in github ? 1h
+
+Criticals:
+	distribution and bundling - I won't be able to use the app in dev mode only
+	yt quota - 6 videos a day won't be enough, hardly even for test
+	ffmpeg convertations - will already help me a lot
+	timecodes creation - will already help me a lot
+
+
+Schedule:
+	Fri:
+		build an exe file
+		read yt requirements to keep them in background
+		install ffmpeg and try to connect to it
+		describe it in tg
+	Mon:
+		ask youtube for the bigger quota ? 2h-2d
+		read files mp3 1h ? - only some idea what to do about it
+		send command to ffmpeg 1h ? how to integrate with other programs in elector? with ffmpeg in js?
+	Tue: 
+		install react to electron ? 30m
+		where does electron store creds? It will be tedious to log in each time the app reruns 30m
+		prepare structure for back and front 40m
+		common design with big mild-orange letters 1h
+	Wed:
+		CRUD for files
