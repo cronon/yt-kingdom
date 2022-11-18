@@ -30,15 +30,17 @@ const youtube = google.youtube('v3');
 async function runSample(fileName) {
   // Obtain user credentials to use for the request
   const auth = await authenticate({
-    keyfilePath: path.join(__dirname, '../oauth2.keys.json'),
+    keyfilePath: path.join(__dirname, '../.secrets/oauth2.keys.json'),
     scopes: [
       'https://www.googleapis.com/auth/youtube.upload',
       'https://www.googleapis.com/auth/youtube',
     ],
   });
+  console.log(auth)
   google.options({auth});
 
   const fileSize = fs.statSync(fileName).size;
+  console.log('fileSize', fileSize)
   const res = await youtube.videos.insert(
     {
       part: 'id,snippet,status',
@@ -73,7 +75,8 @@ async function runSample(fileName) {
 }
 
 if (module === require.main) {
-  const fileName = process.argv[2];
+  // const fileName = process.argv[2];
+  const fileName = '../sample.mp4';
   runSample(fileName).catch(console.error);
 }
 

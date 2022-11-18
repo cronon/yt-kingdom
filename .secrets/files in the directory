@@ -1,1 +1,18 @@
-keep the folder
+
+./oauth2.keys.json - obtained from google developer console. Credentilas -> create credentials -> OAuth 2.0 credentials. Used to authenticate users into the app, that is for users to give a permission for our app to manage their videos
+
+{
+    "installed":
+    {
+        "client_id": "a short string with client id, idk if it a secret or not",
+        "project_id": "a short string with project_id, I believe it is not a secret, but I don't want to disclose it",
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "client_secret": "a short string with client string",
+        "redirect_uris":
+        [
+            "http://localhost"
+        ]
+    }
+}
