@@ -1,0 +1,33 @@
+Project charter
+
+Upload songs and albums to Youtube
+
+An application that makes it easy to add cover picture to an mp3 or several mp3 files and upload them on youtube. With album upload it creates a proper description and playlists. Now it is tedious work, the application should make it as easy as possible.
+
+Business Case: I often upload albums and separate songs to youtube. Soon I'll need to move there many my songs from soundcloud.
+
+Participants: me in the role of everybody. Potentially one more front- or backend developer, but the probability is low.
+Stakeholders: me as the developer and the main user, the ocassional people from the internet.
+
+Project Deliverables:
+An exe file with the app, published on github releases. Possible webapp version
+
+
+Project Risks: 
+blockers: Lack of time or enthusiasm. Lack of something in youtube API or it'll require money. 
+slow downs: difficulties in working with youtube API or with electron.
+
+
+Budget: 
+4h a day for one week
+1.5h in evenings for 2 days a week
+
+Project Milestones: 
+Charter - Nov 18
+PoC of YT API usage - Nov 18
+WBS - Nov 21
+e2e process - Nov 24
+all features - Nov 30
+
+Communication: compare with WBS if it is necessary to have somebody else. If yes, then ask if anybody from tg wants to join. When it is done show it in tg and on the main github page, add necessary tags to github
+
