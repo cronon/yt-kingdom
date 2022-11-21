@@ -36,7 +36,7 @@ async function runSample(fileName) {
       'https://www.googleapis.com/auth/youtube',
     ],
   });
-  console.log(auth)
+  
   google.options({auth});
 
   const fileSize = fs.statSync(fileName).size;
