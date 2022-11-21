@@ -1,5 +1,8 @@
+check out npm audit
 
 TODO check shell escape
+  both for security and for accepting filenames with brackets
+
 filefilter: mp3, jpg, png
 deal with the warning on startup
 
