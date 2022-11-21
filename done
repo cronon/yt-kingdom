@@ -1,0 +1,8 @@
+YT POC upload video
+	https://github.com/googleapis/google-api-nodejs-client/tree/main/samples/youtube
+	authenticate user with OAuth 2.0
+
+WBS
+
+build an exe file
+ with electron-build library
