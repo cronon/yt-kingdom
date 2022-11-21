@@ -1,3 +1,19 @@
+
+
+where does electron store credentials?
+https://www.electronjs.org/docs/latest/api/safe-storage
+https://auth0.com/blog/securing-electron-applications-with-openid-connect-and-oauth-2/
+Auth0 recommends using keytar package
+
+const os = require('os')
+const keytar = require('keytar');
+const keytarService = 'electron-openid-oauth';
+const keytarAccount = os.userInfo().username;
+await keytar.setPassword(keytarService, keytarAccount, 'sdfsdfsdf12312');
+const refreshToken = await keytar.getPassword(keytarService, keytarAccount);
+
+
+
 Connect to ffmpeg
 ```js
 const {default: shellExec} = require('shell-exec');
