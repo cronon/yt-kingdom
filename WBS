@@ -96,7 +96,6 @@ Criticals:
 
 Schedule:
 	Fri:
-		build an exe file
 		read yt requirements to keep them in background
 		install ffmpeg and try to connect to it
 		describe it in tg
@@ -111,3 +110,6 @@ Schedule:
 		common design with big mild-orange letters 1h
 	Wed:
 		CRUD for files
+
+Done
+	build an exe file - with electron-build
