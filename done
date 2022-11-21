@@ -19,3 +19,4 @@ WBS
 
 build an exe file
  with electron-build library
+ updates can be uploaded to github and the app can download them automatically
