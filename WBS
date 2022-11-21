@@ -90,6 +90,7 @@ Unknowns
 Criticals:
 	distribution and bundling - I won't be able to use the app in dev mode only
 	yt quota - 6 videos a day won't be enough, hardly even for test
+		Either try to work with several project_ids, implement a queue or leave the uploading part manual, and try to automate somehow filling up the descriptions
 	ffmpeg convertations - will already help me a lot
 	timecodes creation - will already help me a lot
 

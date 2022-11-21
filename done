@@ -1,3 +1,16 @@
+Connect to ffmpeg
+```js
+const {default: shellExec} = require('shell-exec');
+
+var pathToFfmpeg =  require('ffmpeg-static-electron').path;
+var pathToProbe =  require('ffprobe-static-electron').path;
+console.log(pathToFfmpeg);
+console.log(pathToProbe);
+
+shellExec(pathToFfmpeg + ' --version').then(console.log).catch(console.error)
+```
+
+
 YT POC upload video
 	https://github.com/googleapis/google-api-nodejs-client/tree/main/samples/youtube
 	authenticate user with OAuth 2.0
