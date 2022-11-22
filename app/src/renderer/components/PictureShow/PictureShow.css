@@ -1,0 +1,6 @@
+.y-pictureShow img {
+  width: 640px;
+  height: 360px;
+  object-fit: contain;
+  background: black;
+}

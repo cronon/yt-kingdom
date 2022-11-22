@@ -9,20 +9,14 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
+import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import { Song } from 'common/song';
 
+import {filesLogic} from './filesLogic';
 
-const {default: shellExec} = require('shell-exec');
-
-var pathToFfmpeg =  require('ffmpeg-static-electron').path;
-var pathToProbe =  require('ffprobe-static-electron').path;
-
-const zip = (rows: any[])=>rows[0].map((_,c: any)=>rows.map(row=>row[c]))
 
 class AppUpdater {
   constructor() {
@@ -40,25 +34,9 @@ ipcMain.on('ipc-example', async (event, arg) => {
   event.reply('ipc-example', msgTemplate('pong'));
 });
 
-ipcMain.on('fileOpen', async (event, arg) => {
-  const files = dialog.showOpenDialogSync({ properties: ['openFile', 'multiSelections'] })
-  if (files) {
-    const songs: Song[] = await Promise.all(files.map(async filepath => {
-      const duration = await readMp3(filepath);
-      return {path: filepath, duration, title: path.basename(filepath)}
-    }));
-    event.reply('filesOpened', songs);
-  }
-})
+filesLogic(ipcMain);
 
-async function readMp3(file: string){
-  // TODO check shell escape
-  const out = await shellExec(`${pathToFfmpeg} -v quiet -stats -i ${file} -f null -`);
-  console.log('read from ffmpeg', out)
-  const time = out.stderr.match(/\d\d\:\d\d:\d\d/)[0]
-  console.log(time);
-  return time;
-}
+
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -96,7 +74,6 @@ app
       // dock icon is clicked and there are no other windows open.
       if (mainWindow === null) createWindow();
     });
-    openFile();
   })
   .catch(console.log);
 
