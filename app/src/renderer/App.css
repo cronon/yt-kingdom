@@ -17,7 +17,8 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 1rem;
+  margin: 0;
+  padding: 1rem;
 }
 
 button {
@@ -46,6 +47,12 @@ button:hover {
 }
 .y-playlist {
   margin-right: 1rem;
+}
+.y-songlist {
+  margin: 1rem 0;
+}
+.y-songlist td {
+  vertical-align: top;
 }
 .y-settings {
 

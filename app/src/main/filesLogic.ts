@@ -25,7 +25,8 @@ const tempFolder = {
 }
 
 export function filesLogic(ipcMain: Electron.IpcMain) {
-  ipcMain.on('fileOpen', fileOpen);
+
+  ipcMain.handle('openFileDialog', fileOpenDialog)
   ipcMain.on('startConvert', async (event, args: {songs: Song[], picture: Picture}[]) => {
     const {songs, picture} = args[0];
     const convertedSongs = await convertSongs(songs, picture);
@@ -113,27 +114,25 @@ async function ffmpegCommand(args: string[], onStdout?: (data: string) => void, 
   })
 }
 
-async function fileOpen(event: Electron.IpcMainEvent, arg: any) {
+async function fileOpenDialog(event: Electron.IpcMainInvokeEvent, arg: any): Promise<Array<Song | Picture>> {
   const files = dialog.showOpenDialogSync({
     properties: ['openFile', 'multiSelections'],
     filters: [
       {name: 'Supported files', extensions: ['png', 'jpg', 'mp3']}
     ]
-  })
-  if (files) {
-    const parsedFiles: Array<Song | Picture> = await Promise.all(files.map(async filepath => {
-      const ext = path.extname(filepath);
-      if (ext === '.mp3') {
-        const duration = await readMp3(filepath);
-        return {path: filepath, duration, title: path.basename(filepath)}
-      } else {
-        const base64 =  fs.readFileSync(filepath).toString('base64');
-        return {path: filepath, base64, ext};
-      }
+  }) || [];
+  const parsedFiles: Array<Song | Picture> = await Promise.all(files.map(async filepath => {
+    const ext = path.extname(filepath);
+    if (ext === '.mp3') {
+      const duration = await readMp3(filepath);
+      return {path: filepath, duration, title: path.basename(filepath)}
+    } else {
+      const base64 =  fs.readFileSync(filepath).toString('base64');
+      return {path: filepath, base64, ext};
+    }
 
-    }))
-    event.reply('filesOpened', parsedFiles);
-  }
+  }))
+  return parsedFiles;
 }
 
 async function readMp3(filepath: string): Promise<string> {

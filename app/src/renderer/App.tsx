@@ -22,11 +22,13 @@ function getDefaultData() {
     return {
       isLoading: false,
       songs: [{
+        id: '1',
         path: 'C:\\Data\\Resignostic – Impatiently Doom Waits (Wax Ghosts version).mp3',
         title: 'Resignostic – Impatiently Doom Waits (Wax Ghosts version)',
         duration: '03:45',
       },
       {
+        id: '2',
         path: 'C:\\Data\\Camellia (Feat. Nanahira) - ベースラインやってる？笑 (Can I Friend You On Bassbook Lol).mp3',
         title: 'Camellia (Feat. Nanahira) - ベースラインやってる？笑 (Can I Friend You On Bassbook Lol)',
         duration: '04:47',
@@ -42,25 +44,30 @@ function getDefaultData() {
   }
 }
 
+let _id = 0;
+function getId() {
+  _id +=1;
+  return _id.toString();
+}
+
 function useModel(): UseModel {
   const [isLoading, setIsLoading] = useState(defaultData.isLoading);
   const [songs, setSongs] = useState<Song[]>(defaultData.songs);
   const [picture, setPicture] = useState<Picture>(defaultData.picture);
 
-  const addFilesDialog = () => {
+  const addFilesDialog = async () => {
     if (isLoading) return;
     setIsLoading(true);
-    window.electron.ipcRenderer.once('filesOpened', (newFiles: Array<Song | Picture>) => {
-      setIsLoading(false);
+    const newFiles = await window.electronApi.openFileDialog();
+    setIsLoading(false);
 
-      const songs = newFiles.filter((f: any) => !!f.duration) as Song[];
-      const picture = newFiles.filter((f: any) => f.base64)[0] as Picture;
-      setSongs(prevState => prevState.concat(songs));
-      if (picture) setPicture(picture);
-      // const picture = newFiles.filter
-    });
+    const songs = newFiles
+      .filter((f: any) => !!f.duration)
+      .map(s => ({...s, id: getId()})) as Song[];
+    setSongs(prevState => prevState.concat(songs));
 
-    window.electron.ipcRenderer.sendMessage('fileOpen', ['open']);
+    const picture = newFiles.filter((f: any) => f.base64)[0] as Picture;
+    if (picture) setPicture(picture);
   }
 
   function startConvert() {
@@ -75,15 +82,11 @@ const Main = () => {
 
   return (
     <div className="y-main">
+      <GlobalOverlay isLoading={isLoading} />
       <div className="y-playlist">
         <PictureShow picture={picture} />
-        {songs.map(s => {
-          return <div key={s.path}>
-              <div>{s.title}</div>
-              <div>{s.duration}</div>
-            </div>
-        })}
-        <div style={{background: isLoading ? 'gray' : '' }}>
+        <Songlist songs={songs} />
+        <div>
           <button disabled={isLoading} onClick={addFilesDialog}>Open</button>
           <button disabled={isLoading} onClick={startConvert}>Convert</button>
         </div>
@@ -96,6 +99,35 @@ const Main = () => {
     </div>
   );
 };
+
+function Songlist({songs}: {songs: Song[]}) {
+  return <table className="y-songlist">
+    <tbody >
+        {songs.map((s, i) => <tr key={s.id}>
+              <td>{i+1}</td>
+              <td>{s.title}</td>
+              <td>{s.duration}</td>
+          </tr>
+        )}
+    </tbody>
+  </table>
+}
+
+const zIndexes = {
+  globalOverlay: 1
+}
+function GlobalOverlay({isLoading}: {isLoading: boolean}) {
+  const style = {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    background: 'rgba(255,255,255,0.7)',
+    zIndex: zIndexes.globalOverlay
+  } as const;
+  return isLoading ? <div style={style} /> : <></>;
+}
 
 export default function App() {
   return (
