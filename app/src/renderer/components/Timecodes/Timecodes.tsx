@@ -1,5 +1,6 @@
 import { Song } from 'common/song';
 import { addTimecodes } from './addTimecodes';
+import './Timecodes.css';
 
 export function Timecodes({ songs }: { songs: Song[]; }): JSX.Element {
   type Timecode = { timecode: string; title: string; id: string; };
@@ -16,11 +17,11 @@ export function Timecodes({ songs }: { songs: Song[]; }): JSX.Element {
     }
   }, [] as Timecode[]);
 
-  return <>{timecodes.map(t => {
-    return <div key={t.id}>
-      <code>{t.timecode}</code>
+  return <ol className="y-timecodes">{timecodes.map(t => {
+    return <li key={t.id}>
+      <time>{t.timecode}</time>
       &nbsp;
       {t.title}
-    </div>;
-  })}</>;
+    </li>;
+  })}</ol>;
 }

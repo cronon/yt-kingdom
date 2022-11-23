@@ -15,10 +15,37 @@ interface UseModel {
   picture: Picture;
   startConvert: () => void;
 }
+const showMockData = true;
+const defaultData = getDefaultData();
+function getDefaultData() {
+  if (showMockData) {
+    return {
+      isLoading: false,
+      songs: [{
+        path: 'C:\\Data\\Resignostic – Impatiently Doom Waits (Wax Ghosts version).mp3',
+        title: 'Resignostic – Impatiently Doom Waits (Wax Ghosts version)',
+        duration: '03:45',
+      },
+      {
+        path: 'C:\\Data\\Camellia (Feat. Nanahira) - ベースラインやってる？笑 (Can I Friend You On Bassbook Lol).mp3',
+        title: 'Camellia (Feat. Nanahira) - ベースラインやってる？笑 (Can I Friend You On Bassbook Lol)',
+        duration: '04:47',
+      }] as Song[],
+      picture: {ext: 'png', base64: '', path: ''}
+    }
+  } else {
+    return {
+      isLoading: false,
+      songs: [],
+      picture: {ext: 'png', base64: '', path: ''}
+    }
+  }
+}
+
 function useModel(): UseModel {
-  const [isLoading, setIsLoading] = useState(false);
-  const [songs, setSongs] = useState<Song[]>([]);
-  const [picture, setPicture] = useState<Picture>({ext: 'png', base64: '', path: ''});
+  const [isLoading, setIsLoading] = useState(defaultData.isLoading);
+  const [songs, setSongs] = useState<Song[]>(defaultData.songs);
+  const [picture, setPicture] = useState<Picture>(defaultData.picture);
 
   const addFilesDialog = () => {
     if (isLoading) return;
@@ -62,9 +89,7 @@ const Main = () => {
         </div>
       </div>
       <div className="y-settings">
-          <pre>
-            <Timecodes songs={songs}/>
-          </pre>
+          <Timecodes songs={songs}/>
       </div>
 
 

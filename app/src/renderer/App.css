@@ -17,6 +17,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: 1rem;
 }
 
 button {
@@ -38,35 +39,13 @@ button:hover {
   opacity: 1;
 }
 
-li {
-  list-style: none;
-}
-
-a {
-  text-decoration: none;
-  height: fit-content;
-  width: fit-content;
-  margin: 10px;
-}
-
-a:hover {
-  opacity: 1;
-  text-decoration: none;
-}
-
-.Hello {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 20px 0;
-}
 
 .y-main {
   display: flex;
   flex-direction: row;
 }
 .y-playlist {
-
+  margin-right: 1rem;
 }
 .y-settings {
 

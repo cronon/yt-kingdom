@@ -1,6 +1,7 @@
 .y-pictureShow img {
-  width: 640px;
-  height: 360px;
+  /* 16:9 ration - the same as in youtube */
+  width: 400px;
+  height: 225px;
   object-fit: contain;
   background: black;
 }

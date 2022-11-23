@@ -39,20 +39,8 @@ async function convertSongs(songs: Song[], picture: Picture): Promise<void> {
   const mp4Paths = await Promise.all(songs.map(async song => {
     return convertSong(song.path, picture.path);
   }));
-  console.log('MP$ paths', mp4Paths)
   await concatVideos(mp4Paths);
 }
-/*
-MP$ paths [
-  'C:\\Users\\HP-PC\\Documents\\pet\\uploader\\app\\src\\main\\temp\\sample027.mp3.mp4',
-  'C:\\Users\\HP-PC\\Documents\\pet\\uploader\\app\\src\\main\\temp\\sample027-reMix).mp3.mp4'
-]
-*/
-
-// concatVideos([
-//   'C:\\Users\\HP-PC\\Documents\\pet\\uploader\\app\\src\\main\\temp\\sample027.mp3.mp4',
-//   'C:\\Users\\HP-PC\\Documents\\pet\\uploader\\app\\src\\main\\temp\\sample027-reMix).mp3.mp4'
-// ])
 
 async function concatVideos(mp4Paths: string[]): Promise<void> {
   const listFilePath = tempFolder.tempPath('list.txt');
