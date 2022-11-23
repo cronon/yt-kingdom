@@ -87,9 +87,10 @@ Criticals:
 
 
 Schedule:
-	Wed:
-    evaluate tech debt
-    have all the logic about files on backend
+  Login to youtube
+  Upload three videos
+  include two of them into a playlist
+
 
 
 Done

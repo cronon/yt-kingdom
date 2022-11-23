@@ -18,7 +18,7 @@ body {
   justify-content: center;
   align-items: center;
   margin: 0;
-  padding: 1rem;
+  padding: 0;
 }
 
 button {
@@ -40,10 +40,30 @@ button:hover {
   opacity: 1;
 }
 
-
 .y-main {
   display: flex;
+  flex-direction: column;
+}
+.y-login-bar {
+  background: rgba(255,255,255,0.3);
+  display: flex;
+  padding: 0.5rem 1rem;
+  font-size: 2.4rem;
+  justify-content: end;
+}
+.y-username {
+
+}
+.y-login-button {
+
+}
+.y-login-error {
+  color: rgb(255 235 0);
+}
+.y-stage {
+  display: flex;
   flex-direction: row;
+  padding: 0 1rem;
 }
 .y-playlist {
   margin-right: 1rem;
@@ -52,7 +72,7 @@ button:hover {
   margin: 1rem 0;
 }
 .y-songlist td {
-  vertical-align: top;
+  vertical-align: baseline;
 }
 .y-settings {
 

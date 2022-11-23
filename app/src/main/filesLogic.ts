@@ -31,20 +31,21 @@ export function filesLogic(ipcMain: Electron.IpcMain) {
   ipcMain.handle('startConvert', async (event, args: {songs: Song[], picture: Picture}) => {
     const {songs, picture} = args;
     const convertedSongs = await convertSongs(songs, picture);
+    console.log(convertedSongs)
     return convertedSongs;
   })
 }
 
 
-
-async function convertSongs(songs: Song[], picture: Picture): Promise<void> {
+async function convertSongs(songs: Song[], picture: Picture): Promise<string[]> {
   const mp4Paths = await Promise.all(songs.map(async song => {
     return convertSong(song.path, picture.path);
   }));
-  await concatVideos(mp4Paths);
+  const totalMp4 = await concatVideos(mp4Paths);
+  return mp4Paths.concat(totalMp4);
 }
 
-async function concatVideos(mp4Paths: string[]): Promise<void> {
+async function concatVideos(mp4Paths: string[]): Promise<string> {
   const listFilePath = tempFolder.tempPath('list.txt');
   // file '/mnt/share/file 3'\''.wav'
   const listFileContents = mp4Paths.map(p => `file '${p.replace(/\'/g, `\\'`)}'`).join('\n')
@@ -52,7 +53,7 @@ async function concatVideos(mp4Paths: string[]): Promise<void> {
 
   const totalFilePath = tempFolder.tempPath('total.mp4')
   // ffmpeg -f concat -safe 0 -i mylist.txt -c copy output.mp4
-  ffmpegCommand([
+  await ffmpegCommand([
     '-f', 'concat',
     '-safe', '0',
     '-i', listFilePath,
@@ -60,9 +61,8 @@ async function concatVideos(mp4Paths: string[]): Promise<void> {
     totalFilePath,
     '-y'
   ],
-  (data) => {},
-  (stderr) => {}
   )
+  return totalFilePath;
 }
 
 async function convertSong(songPath: string, picturePath: string): Promise<string> {

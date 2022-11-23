@@ -16,6 +16,7 @@ import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import fs from 'fs';
 import {filesLogic} from './filesLogic';
+import { youtubeLogic } from './youtubeLogic';
 
 async function keytar(){
 const os = require('os')
@@ -38,7 +39,7 @@ class AppUpdater {
 let mainWindow: BrowserWindow | null = null;
 
 filesLogic(ipcMain);
-
+youtubeLogic(ipcMain);
 
 const isDebug =
   process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
