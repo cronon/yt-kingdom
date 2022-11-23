@@ -44,7 +44,7 @@ const isDebug =
   process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 
 if (isDebug) {
-  require('electron-debug')();
+  require('electron-debug')({ showDevTools: false });
 }
 
 
@@ -75,7 +75,6 @@ app
   .catch(err => {
     logError(err);
   });
-console.log('DEBUGPROD', process.env.DEBUG_PROD);
 
 function logError(e: any) {
   if (process.env.DEBUG_PROD === 'true') {
@@ -133,7 +132,7 @@ async function createWindow() {
 
   // Open urls in the user's browser
   mainWindow.webContents.setWindowOpenHandler((edata) => {
-    shell.openExternal(edata.url);
+    // shell.openExternal(edata.url);
     return { action: 'deny' };
   });
 

@@ -94,23 +94,30 @@ async function convertSong(songPath: string, picturePath: string): Promise<strin
   return mp4Path;
 }
 
-async function ffmpegCommand(args: string[], onStdout?: (data: string) => void, onStdErr?: (data: string) => void): Promise<void> {
+async function ffmpegCommand(args: string[], onStdout?: (data: string) => void, onStdErr?: (data: string) => void): Promise<{allstdout: string, allstderr: string}> {
   console.log(pathToFfmpeg + ' ' + args.join(' '));
 
   const command = spawn(pathToFfmpeg, args);
+  let allstdout: string = '';
+  let allstderr: string = '';
   return new Promise((res, rej) => {
     command.stdout.on('data', (data: any) => {
       console.log(`stdout: ${data}`);
+      allstdout += data;
     });
 
     command.stderr.on('data', (data: any) => {
-      console.error(`stderr: ${data}`);
+      console.log(`stderr: ${data}`);
+      allstderr += data;
     });
 
     command.on('close', (code: any) => {
-      console.log(`child process exited with code ${code}`);
+      console.log(`ffmpeg process exited with code ${code}`);
       if (code === 0) {
-        res()
+        res({
+          allstdout,
+          allstderr
+        })
       } else {
         rej(code);
       }
@@ -142,10 +149,14 @@ async function fileOpen(event: Electron.IpcMainEvent, arg: any) {
 }
 
 async function readMp3(filepath: string): Promise<string> {
-  // TODO check shell escape
-  const out = await shellExec(`${pathToFfmpeg} -v quiet -stats -i ${filepath} -f null -`);
-  console.log('read from ffmpeg', out)
-  const time = out.stderr.match(/\d\d\:\d\d:\d\d/)
+  const {allstderr: stderr} = await ffmpegCommand([
+    // '-v', 'quiet',
+    '-stats',
+    '-i', filepath,
+    '-f', 'null',
+    '-'
+  ])
+  const time = stderr.match(/\d\d\:\d\d:\d\d/)
   if (time) {
     return time[0];
   } else {
