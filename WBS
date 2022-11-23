@@ -1,4 +1,4 @@
-The user flow is the following: open the app, move files into the app or select them in a popup window - provide somehow files. Press generate maybe with some configs and in generates a video. User sees a progress bar showing how much time is left (or maybe show there ffmpeg output), to see that something happens at least. While the video is being generated, the app also generates the album description with chapters and timecodes. User can edit this description. Description can include a placeholder for song title. It may also be necessary to edit song titles because filenames are not usually beautiful. 
+The user flow is the following: open the app, move files into the app or select them in a popup window - provide somehow files. Press generate maybe with some configs and in generates a video. User sees a progress bar showing how much time is left (or maybe show there ffmpeg output), to see that something happens at least. While the video is being generated, the app also generates the album description with chapters and timecodes. User can edit this description. Description can include a placeholder for song title. It may also be necessary to edit song titles because filenames are not usually beautiful.
 The videos are generated, then the user presses upload button, everything is uploaded on Youtube and it shows you the links to the videos, playlist and your channel content maybe.
 
 
@@ -49,7 +49,7 @@ upload to youtube
 		progressbar
 			code 15m
 		youtube permissions for bigger quota
-			ask youtube for the bigger quota ? 2h-2d 
+			ask youtube for the bigger quota ? 2h-2d
 				read their requirements 10m
 				prepare papers ?
 				gain some courage ?
@@ -59,7 +59,7 @@ upload to youtube
 		code 10m
 exe file
 	bundled code
-		run build 10m 
+		run build 10m
 		find out how to distrubute electron apps ? 20m
 		how to do updates ? 1h
 		preferably with ffmpeg included to the bundle
@@ -84,26 +84,15 @@ Criticals:
 	distribution and bundling - I won't be able to use the app in dev mode only
 	yt quota - 6 videos a day won't be enough, hardly even for test
 		Either try to work with several project_ids, implement a queue or leave the uploading part manual, and try to automate somehow filling up the descriptions
-	ffmpeg convertations - will already help me a lot
-	timecodes creation - will already help me a lot
 
 
 Schedule:
-	Fri:
-		read yt requirements to keep them in background
-		install ffmpeg and try to connect to it
-		describe it in tg
-	Mon:
-		ask youtube for the bigger quota ? 2h-2d
-		read files mp3 1h ? - only some idea what to do about it
-		send command to ffmpeg 1h ? how to integrate with other programs in elector? with ffmpeg in js?
-	Tue: 
-		install react to electron ? 30m
-		where does electron store creds? It will be tedious to log in each time the app reruns 30m
-		prepare structure for back and front 40m
-		common design with big mild-orange letters 1h
 	Wed:
-		CRUD for files
+    Try launching it in win 8
+    have all the logic about files on backend
+    make interface
+
 
 Done
-	
+	ffmpeg convertations - will already help me a lot
+	timecodes creation - will already help me a lot

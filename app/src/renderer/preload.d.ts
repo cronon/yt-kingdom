@@ -1,3 +1,4 @@
+import { Song } from 'common/song';
 import { Channels } from 'main/preload';
 
 declare global {
@@ -9,6 +10,7 @@ declare global {
           channel: Channels,
           func: (...args: unknown[]) => void
         ): (() => void) | undefined;
+        once(channel: 'songsConverted', func: (songs: Song[]) => void): void;
         once(channel: 'filesOpened', func: (songs: Song[]) => void): void;
         once(channel: Channels, func: (...args: unknown[]) => void): void;
       };

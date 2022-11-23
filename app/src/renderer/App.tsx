@@ -13,11 +13,13 @@ interface UseModel {
   songs: Song[];
   addFilesDialog: () => void;
   picture: Picture;
+  startConvert: () => void;
 }
 function useModel(): UseModel {
   const [isLoading, setIsLoading] = useState(false);
   const [songs, setSongs] = useState<Song[]>([]);
-  const [picture, setPicture] = useState<Picture>({ext: 'png', base64: '', path: ''})
+  const [picture, setPicture] = useState<Picture>({ext: 'png', base64: '', path: ''});
+
   const addFilesDialog = () => {
     if (isLoading) return;
     setIsLoading(true);
@@ -27,18 +29,22 @@ function useModel(): UseModel {
       const songs = newFiles.filter((f: any) => !!f.duration) as Song[];
       const picture = newFiles.filter((f: any) => f.base64)[0] as Picture;
       setSongs(prevState => prevState.concat(songs));
-      setPicture(picture);
+      if (picture) setPicture(picture);
       // const picture = newFiles.filter
     });
 
     window.electron.ipcRenderer.sendMessage('fileOpen', ['open']);
   }
 
-  return {isLoading, songs, addFilesDialog, picture}
+  function startConvert() {
+    window.electron.ipcRenderer.sendMessage('startConvert', [{songs, picture}]);
+  }
+
+  return {isLoading, songs, addFilesDialog, picture, startConvert}
 }
 ;;
 const Main = () => {
-  const {isLoading, songs, addFilesDialog, picture} = useModel();
+  const {isLoading, songs, addFilesDialog, picture, startConvert} = useModel();
 
   return (
     <div className="y-main">
@@ -52,6 +58,7 @@ const Main = () => {
         })}
         <div style={{background: isLoading ? 'gray' : '' }}>
           <button disabled={isLoading} onClick={addFilesDialog}>Open</button>
+          <button disabled={isLoading} onClick={startConvert}>Convert</button>
         </div>
       </div>
       <div className="y-settings">

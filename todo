@@ -1,3 +1,9 @@
+clean temp folder?
+
+picture width should be divisible by 2?
+show size of image
+select several picutres in the dialong, then choose between them with arrows
+
 check out npm audit
 
 TODO check shell escape

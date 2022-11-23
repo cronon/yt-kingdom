@@ -35,4 +35,5 @@ WBS
 
 build an exe file
  with electron-build library
+ "electron-builder build --win portable"
  updates can be uploaded to github and the app can download them automatically

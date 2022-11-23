@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 
-export type Channels = 'ipc-example' | 'filesOpened' | 'fileOpen';
+export type Channels = 'ipc-example' | 'filesOpened' | 'fileOpen' | 'startConvert';
 
 contextBridge.exposeInMainWorld('electron', {
   ipcRenderer: {
