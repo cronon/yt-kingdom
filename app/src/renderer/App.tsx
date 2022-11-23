@@ -27,13 +27,13 @@ function getDefaultData() {
         id: '1',
         path: cPath + 'Resignostic – Impatiently Doom Waits (Wax Ghosts version).mp3',
         title: 'Resignostic – Impatiently Doom Waits (Wax Ghosts version)',
-        duration: '03:45',
+        duration: '00:03:45',
       },
       {
         id: '2',
         path: cPath + 'Camellia (Feat. Nanahira) - ベースラインやってる？笑 (Can I Friend You On Bassbook Lol).mp3',
         title: 'Camellia (Feat. Nanahira) - ベースラインやってる？笑 (Can I Friend You On Bassbook Lol)',
-        duration: '04:47',
+        duration: '00:04:47',
       }] as Song[],
       picture: {ext: 'png', base64: '', path: cPath + 'cover.jpg'}
     }
@@ -113,11 +113,16 @@ function Songlist({songs}: {songs: Song[]}) {
         {songs.map((s, i) => <tr key={s.id}>
               <td>{i+1}</td>
               <td>{s.title}</td>
-              <td>{s.duration}</td>
+              <td>{noZeroHH(s.duration)}</td>
           </tr>
         )}
     </tbody>
   </table>
+}
+function noZeroHH(timestamp: string) {
+  if (timestamp.length === 5) return timestamp
+  else if (timestamp.length === 8 && timestamp[0] === '0' && timestamp[1] === '0') return timestamp.slice(3)
+  else throw new Error(`Cannot remove leading zeros from a time ${timestamp}`);
 }
 
 const zIndexes = {
