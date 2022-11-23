@@ -6,7 +6,7 @@ import shellExec from "shell-exec";
 import fs from 'fs';
 import {spawn} from 'child_process';
 
-var pathToFfmpeg =  require('ffmpeg-static-electron').path;
+var pathToFfmpeg =  require('ffmpeg-static-electron').path.replace('app.asar', 'app.asar.unpacked');
 
 const tempFolder = {
   path: path.join(__dirname, 'temp'),

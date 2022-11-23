@@ -14,9 +14,18 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-
+import fs from 'fs';
 import {filesLogic} from './filesLogic';
 
+async function keytar(){
+const os = require('os')
+const keytar = require('keytar');
+const keytarService = 'electron-openid-oauth';
+const keytarAccount = os.userInfo().username;
+await keytar.setPassword(keytarService, keytarAccount, 'sdfsdfsdf12312');
+const refreshToken = await keytar.getPassword(keytarService, keytarAccount);
+}
+keytar().catch(e => logError(e));
 
 class AppUpdater {
   constructor() {
@@ -30,12 +39,6 @@ let mainWindow: BrowserWindow | null = null;
 
 filesLogic(ipcMain);
 
-
-
-if (process.env.NODE_ENV === 'production') {
-  const sourceMapSupport = require('source-map-support');
-  sourceMapSupport.install();
-}
 
 const isDebug =
   process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
@@ -69,13 +72,23 @@ app
       if (mainWindow === null) createWindow();
     });
   })
-  .catch(console.log);
+  .catch(err => {
+    logError(err);
+  });
+console.log('DEBUGPROD', process.env.DEBUG_PROD);
 
-
+function logError(e: any) {
+  if (process.env.DEBUG_PROD === 'true') {
+    fs.writeFileSync('log.log', e.toString())
+  } else {
+    console.error(e);
+  }
+}
 
 async function createWindow() {
   if (isDebug) {
-    await installExtensions();
+    // https://github.com/electron/electron/issues/32133#issuecomment-1113989944
+    // await installExtensions();
   }
 
   const RESOURCES_PATH = app.isPackaged

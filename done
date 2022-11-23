@@ -1,3 +1,5 @@
+Where to store the state and logic: on node or client part?
+People on the internet said different things about whether the logic should be on back or front part. Let it stay on frontend part, it'll be easier.
 
 
 where does electron store credentials?
