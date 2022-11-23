@@ -27,10 +27,10 @@ const tempFolder = {
 export function filesLogic(ipcMain: Electron.IpcMain) {
 
   ipcMain.handle('openFileDialog', fileOpenDialog)
-  ipcMain.on('startConvert', async (event, args: {songs: Song[], picture: Picture}[]) => {
-    const {songs, picture} = args[0];
+  ipcMain.handle('startConvert', async (event, args: {songs: Song[], picture: Picture}) => {
+    const {songs, picture} = args;
     const convertedSongs = await convertSongs(songs, picture);
-    event.reply('convertedSongs', convertedSongs);
+    return convertedSongs;
   })
 }
 
@@ -113,6 +113,11 @@ async function ffmpegCommand(args: string[], onStdout?: (data: string) => void, 
     });
   })
 }
+let _id = 0;
+function getId() {
+  _id +=1;
+  return _id.toString();
+}
 
 async function fileOpenDialog(event: Electron.IpcMainInvokeEvent, arg: any): Promise<Array<Song | Picture>> {
   const files = dialog.showOpenDialogSync({
@@ -125,7 +130,7 @@ async function fileOpenDialog(event: Electron.IpcMainInvokeEvent, arg: any): Pro
     const ext = path.extname(filepath);
     if (ext === '.mp3') {
       const duration = await readMp3(filepath);
-      return {path: filepath, duration, title: path.basename(filepath)}
+      return {id: getId(), path: filepath, duration, title: path.basename(filepath)}
     } else {
       const base64 =  fs.readFileSync(filepath).toString('base64');
       return {path: filepath, base64, ext};

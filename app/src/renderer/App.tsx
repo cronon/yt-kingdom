@@ -7,6 +7,7 @@ import { Timecodes } from './components/Timecodes/Timecodes';
 import { Picture } from 'common/picture';
 import { PictureShow } from './components/PictureShow/PictureShow';
 
+const electronApi = window.electronApi;
 
 interface UseModel {
   isLoading: boolean;
@@ -70,8 +71,13 @@ function useModel(): UseModel {
     if (picture) setPicture(picture);
   }
 
-  function startConvert() {
-    window.electron.ipcRenderer.sendMessage('startConvert', [{songs, picture}]);
+  async function startConvert() {
+    setIsLoading(true);
+    try {
+      await electronApi.startConvert({songs, picture});
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return {isLoading, songs, addFilesDialog, picture, startConvert}
