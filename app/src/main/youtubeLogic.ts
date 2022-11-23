@@ -13,6 +13,9 @@ export function youtubeLogic(ipcMain: Electron.IpcMain) {
 
 async function youtubeLogin(): Promise<{username: string, loginError: string | null}> {
   const secretsPath = path.join(app.getAppPath(), '../.secrets/oauth2.keys.json');
+
+
+
   const auth = await authenticate({
     keyfilePath: secretsPath,
     scopes: [
