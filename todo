@@ -1,4 +1,6 @@
-show user avatar from Youtube
+where to store client id when deistributing app
+
+show user avatar from Youtube. items.snippet.thumbnails has an array of links
 
 A warning during concat
 [mp4 @ 0000020759ba8f20] Non-monotonous DTS in output stream 0:1; previous: 45238338, current: 33638144; changing to 45238339. This may result in incorrect timestamps in the output file.
