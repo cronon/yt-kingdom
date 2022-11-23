@@ -87,7 +87,7 @@ function logError(e: any) {
 async function createWindow() {
   if (isDebug) {
     // https://github.com/electron/electron/issues/32133#issuecomment-1113989944
-    // await installExtensions();
+    await installExtensions();
   }
 
   const RESOURCES_PATH = app.isPackaged
@@ -119,7 +119,22 @@ async function createWindow() {
     if (process.env.START_MINIMIZED) {
       mainWindow.minimize();
     } else {
+
+      // if (isDebug) {
+
+      // } else {
+      //   mainWindow.show();
+      // }
+
       mainWindow.show();
+
+      // if (isDebug) {
+      //   mainWindow.show()
+      //   mainWindow.maximize()
+      //   mainWindow.webContents.openDevTools();
+      // } else {
+      //   mainWindow.show();
+      // }
     }
   });
 

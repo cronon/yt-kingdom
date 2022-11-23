@@ -20,21 +20,22 @@ const showMockData = true;
 const defaultData = getDefaultData();
 function getDefaultData() {
   if (showMockData) {
+    const cPath = 'C:\\Users\\HP-PC\\Documents\\pet\\uploader\\samples\\'
     return {
       isLoading: false,
       songs: [{
         id: '1',
-        path: 'C:\\Data\\Resignostic – Impatiently Doom Waits (Wax Ghosts version).mp3',
+        path: cPath + 'Resignostic – Impatiently Doom Waits (Wax Ghosts version).mp3',
         title: 'Resignostic – Impatiently Doom Waits (Wax Ghosts version)',
         duration: '03:45',
       },
       {
         id: '2',
-        path: 'C:\\Data\\Camellia (Feat. Nanahira) - ベースラインやってる？笑 (Can I Friend You On Bassbook Lol).mp3',
+        path: cPath + 'Camellia (Feat. Nanahira) - ベースラインやってる？笑 (Can I Friend You On Bassbook Lol).mp3',
         title: 'Camellia (Feat. Nanahira) - ベースラインやってる？笑 (Can I Friend You On Bassbook Lol)',
         duration: '04:47',
       }] as Song[],
-      picture: {ext: 'png', base64: '', path: ''}
+      picture: {ext: 'png', base64: '', path: cPath + 'cover.jpg'}
     }
   } else {
     return {

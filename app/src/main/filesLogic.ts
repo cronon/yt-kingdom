@@ -1,15 +1,14 @@
 import { Picture } from "common/picture";
 import { Song } from "common/song";
-import { dialog } from "electron";
+import { app, dialog } from "electron";
 import path from "path";
-import shellExec from "shell-exec";
 import fs from 'fs';
 import {spawn} from 'child_process';
 
 var pathToFfmpeg =  require('ffmpeg-static-electron').path.replace('app.asar', 'app.asar.unpacked');
 
 const tempFolder = {
-  path: path.join(__dirname, 'temp'),
+  path: path.join(app.getAppPath(), 'temp'),
   tempPath(file: string) {
     return path.join(this.getFolder(), file);
   },
@@ -23,6 +22,8 @@ const tempFolder = {
 
   }
 }
+
+tempFolder.getFolder()
 
 export function filesLogic(ipcMain: Electron.IpcMain) {
 
