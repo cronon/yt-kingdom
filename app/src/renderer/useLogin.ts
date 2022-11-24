@@ -1,4 +1,5 @@
-import {useState} from 'react';
+import { Auth } from 'common/auth';
+import {useEffect, useState} from 'react';
 
 export interface UseLogin {
   username: string;
@@ -29,6 +30,13 @@ export function useLogin({isLoading, setIsLoading, showMockData}: {showMockData:
   const [isLoggedIn, setIsLoggedIn] = useState(defaultData.isLoggedIn);
   const [username, setUsername] = useState(defaultData.username);
   const [loginError, setLoginError] = useState<null | string>(defaultData.loginError);
+  useEffect(() => {
+    window.electronApi.onLoginChange((auth: Auth) => {
+      setIsLoggedIn(auth.isLoggedIn);
+      if (auth.username) setUsername(auth.username);
+      if (auth.loginError) setLoginError(auth.loginError);
+    });
+  });
 
   async function login() {
     setIsLoading(true);

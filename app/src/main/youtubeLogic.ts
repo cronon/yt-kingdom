@@ -1,37 +1,23 @@
 
 import fs from 'fs';
-import path from 'path';
 import { google, youtube_v3 } from 'googleapis';
-import { authenticate } from './googleAuth';
-import { app } from 'electron';
-import { OAuth2Client } from 'google-auth-library';
+import { authenticate, createAuth } from './googleAuth';
+
 
 export function youtubeLogic(ipcMain: Electron.IpcMain) {
   ipcMain.handle('youtubeLogin', youtubeLogin);
   ipcMain.handle('youtubeUpload', (event, args) => youtubeUpload(args))
 }
 
+async function getYoutube(): Promise<youtube_v3.Youtube> {
+  const {client, isLoggedIn} = await createAuth()
+  if (!isLoggedIn) throw new Error(`Can't access Youtube API while not logged in`)
+  google.options({auth: client});
+  return google.youtube('v3')
+}
 
-// The application should store the refresh token for future use and use the access token to access a Google API. Once the access token expires, the application uses the refresh token to obtain a new one.
-let auth: null | OAuth2Client = null;
-let youtube: null | youtube_v3.Youtube = null;
-
-async function youtubeLogin(): Promise<{username: string, loginError: string | null}> {
-  const secretsPath = path.join(app.getAppPath(), '../.secrets/oauth2.keys.json');
-
-
-
-  auth = await authenticate({
-    keyfilePath: secretsPath,
-    scopes: [
-      'https://www.googleapis.com/auth/youtube.upload',
-      'https://www.googleapis.com/auth/youtube',
-    ],
-  });
-  const {access_token, refresh_token, scope, token_type, expiry_date} = auth.credentials;
-  console.log(auth);
-  google.options({auth})
-  youtube = google.youtube('v3');
+export async function getUsername(): Promise<{username: string; loginError: string | null}> {
+  const youtube = await getYoutube();
   const response = await youtube.channels.list({
     "part": [
       "snippet"
@@ -46,8 +32,19 @@ async function youtubeLogin(): Promise<{username: string, loginError: string | n
   return {username: username, loginError: null}
 }
 
+async function youtubeLogin(): Promise<{username: string, loginError: string | null}> {
+  let {client: auth} = await createAuth();
+  auth = await authenticate(auth, [
+    'https://www.googleapis.com/auth/youtube.upload',
+    'https://www.googleapis.com/auth/youtube',
+  ]);
+  const {username, loginError} = await getUsername();
+  return {username, loginError}
+}
+
 async function youtubeUpload({mp4Path, title, description}: {mp4Path: string, title: string, description: string}): Promise<{url: string, err: string | null}> {
-  if (!auth || !youtube) {
+  const {client, isLoggedIn} = await createAuth();
+  if (!client || !isLoggedIn) {
     return {url: '', err: 'You\'re not logged in to Youtube'}
   }
   if (!fs.existsSync(mp4Path)) {

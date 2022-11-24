@@ -45,13 +45,13 @@ function getDefaultData(showMockData: boolean) {
       }] as Song[],
       picture: {ext: 'png', base64: '', path: cPath + 'cover.jpg'},
       songTemplate: `Kiara - %track%
-      Mustard seed (2021)
-      https://soundcloud.com/kiarabirth`,
-            albumTemplate: `Mustard seed (2021)
-      https://soundcloud.com/kiarabirth
-      #electronic #ambient #dungeonSynth
+Mustard seed (2021)
+https://soundcloud.com/kiarabirth`,
+      albumTemplate: `Mustard seed (2021)
+https://soundcloud.com/kiarabirth
+#electronic #ambient #dungeonSynth
 
-      %playlist%`
+%playlist%`
     }
   } else {
     return {

@@ -9,24 +9,17 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import fs from 'fs';
 import {filesLogic} from './filesLogic';
-import { youtubeLogic } from './youtubeLogic';
+import { getUsername, youtubeLogic } from './youtubeLogic';
+import { createAuth } from './googleAuth';
 
-async function keytar(){
-const os = require('os')
-const keytar = require('keytar');
-const keytarService = 'electron-openid-oauth';
-const keytarAccount = os.userInfo().username;
-await keytar.setPassword(keytarService, keytarAccount, 'sdfsdfsdf12312');
-const refreshToken = await keytar.getPassword(keytarService, keytarAccount);
-}
-keytar().catch(e => logError(e));
+
 
 class AppUpdater {
   constructor() {
@@ -40,6 +33,24 @@ let mainWindow: BrowserWindow | null = null;
 
 filesLogic(ipcMain);
 youtubeLogic(ipcMain);
+
+
+const auth = {
+  isLoggedIn: false,
+  username: null as (null | string),
+  loginError: null as (null|string)
+}
+createAuth().then(async (params) => {
+  auth.isLoggedIn = params.isLoggedIn;
+  if (auth.isLoggedIn) {
+    const {username, loginError} = await getUsername();
+    auth.username = username;
+    auth.loginError = loginError;
+    if (mainWindow) {
+      mainWindow.webContents.send('onLoginChange', auth)
+    }
+  }
+});
 
 const isDebug =
   process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
@@ -111,6 +122,10 @@ async function createWindow() {
     },
   });
 
+  mainWindow.webContents.send('onLoginChange', auth);
+
+
+
   mainWindow.loadURL(resolveHtmlPath('index.html'));
 
   mainWindow.on('ready-to-show', () => {
@@ -130,9 +145,9 @@ async function createWindow() {
       mainWindow.show();
 
       // if (isDebug) {
-      //   mainWindow.show()
-      //   mainWindow.maximize()
-      //   mainWindow.webContents.openDevTools();
+        mainWindow.show()
+        mainWindow.maximize()
+        mainWindow.webContents.openDevTools();
       // } else {
       //   mainWindow.show();
       // }

@@ -74,6 +74,7 @@ const Main = () => {
 
 function LoginBar(props: {showMockData: boolean, isLoading: boolean, setIsLoading: (e: boolean) => void}): JSX.Element {
   const {isLoggedIn, username, loginError, login} = useLogin(props);
+  console.log('useLogin', isLoggedIn, username)
   const usernameEl = isLoggedIn && <div className="y-username">@{username}</div>;
   const loginButton = !isLoggedIn && <button className="y-login-button " type="button" onClick={login}>Login</button>
   const loginErrorEl = loginError && <div className="y-login-error">Login error: {loginError}</div>
