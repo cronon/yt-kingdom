@@ -7,12 +7,19 @@ const electronApi = {
   async openFileDialog(): Promise<Array<Picture | Song>> {
     return ipcRenderer.invoke('openFileDialog')
   },
-  async startConvert(params: {songs: Song[], picture: Picture}): Promise<void> {
-    return ipcRenderer.invoke('startConvert', params)
+  async convertSongs(params: {songs: Song[], picture: Picture}): Promise<string[]> {
+    return ipcRenderer.invoke('convertSongs', params)
   },
-  youtubeLogin(): Promise<{username: string, loginError: string | null}> {
+  async concatVideos(params: {mp4Paths: string[]}): Promise<string> {
+    return ipcRenderer.invoke('concatVideos', params)
+  },
+  async youtubeLogin(): Promise<{username: string, loginError: string | null}> {
     return ipcRenderer.invoke('youtubeLogin')
+  },
+  async youtubeUpload(params: {mp4Path: string, title: string, description: string}): Promise<{url: string, err: string | null}> {
+    return ipcRenderer.invoke('youtubeUpload', params)
   }
+
 }
 export type ElectronAPI = typeof electronApi;
 

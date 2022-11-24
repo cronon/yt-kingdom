@@ -3,38 +3,34 @@ import icon from '../../assets/icon.svg';
 import './App.css';
 import {useState, useEffect} from 'react';
 import { Song } from 'common/song';
-import { Timecodes } from './components/Timecodes/Timecodes';
+import { timecodes } from './components/Timecodes/timecodes';
 import { Picture } from 'common/picture';
 import { PictureShow } from './components/PictureShow/PictureShow';
 import { useFiles } from './useFiles';
 import { useLogin } from './useLogin';
 
-const electronApi = window.electronApi;
-
-interface UseModel {
-  isLoading: boolean;
-  songs: Song[];
-  addFilesDialog: () => void;
-  picture: Picture;
-  startConvert: () => void;
-}
 const showMockData = true;
 function getDefaultData(showMockData: boolean) {
   if (showMockData) {
-    return {isLoading: false}
+    return {
+      isLoading: false,
+    }
   } else {
-    return {isLoading: false}
+    return {
+      isLoading: false,
+    }
   }
 }
-
-
-
 
 const Main = () => {
   const defaultData = getDefaultData(showMockData);
   const [isLoading, setIsLoading] = useState(defaultData.isLoading);
-  const {songs, addFilesDialog, picture, startConvert} = useFiles({isLoading, setIsLoading, showMockData});
+  const {songs, addFilesDialog, picture, startConvert, convertAndUpload,
+    songTemplate, setSongTemplate, songPreview,
+    albumTemplate, setAlbumTemplate, albumPreview} = useFiles({isLoading, setIsLoading, showMockData});
 
+
+  const [uploadAlbum, setUploadAlbum] = useState(true);
   return (
     <div className="y-main">
       <GlobalOverlay isLoading={isLoading} />
@@ -46,10 +42,30 @@ const Main = () => {
           <div>
             <button disabled={isLoading} onClick={addFilesDialog}>Open</button>
             <button disabled={isLoading} onClick={startConvert}>Convert</button>
+            <button disabled={isLoading} onClick={convertAndUpload}>Convert and Upload</button>
           </div>
         </div>
         <div className="y-settings">
-            <Timecodes songs={songs}/>
+            <div className="y-song-settings">
+              <div>
+                <label>
+                  <div>Template</div>
+                  <textarea value={songTemplate} rows={3} placeholder="Use %track% to place song title" onChange={e => setSongTemplate(e.target.value)} />
+                </label>
+              </div>
+              <div>Preview:</div>
+              <div className="y-song-preview">{songPreview}</div>
+            </div>
+            <div className="y-settings-divider"></div>
+            <label>Upload album: <input type="checkbox" checked={uploadAlbum} onChange={e => setUploadAlbum(e.target.checked)} /></label>
+            <div className="y-album-settings">
+                <label>
+                  <div>Album video template</div>
+                  <textarea value={albumTemplate} rows={5} placeholder="Use %playlist% to place song title" onChange={e => setAlbumTemplate(e.target.value)} />
+                </label>
+              <div>Preview:</div>
+              <div className="y-album-preview">{albumPreview}</div>
+            </div>
         </div>
       </div>
     </div>

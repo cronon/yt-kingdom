@@ -13,10 +13,6 @@ body {
     #7a2c9e 129.35%
   );
   font-family: sans-serif;
-  overflow-y: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   margin: 0;
   padding: 0;
 }
@@ -50,6 +46,8 @@ button:hover {
   padding: 0.5rem 1rem;
   font-size: 2.4rem;
   justify-content: end;
+  margin-bottom: 1rem;
+  margin-top: 0.125rem;
 }
 .y-username {
 
@@ -76,4 +74,23 @@ button:hover {
 }
 .y-settings {
 
+}
+.y-song-settings textarea,
+.y-album-settings textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 3rem;
+}
+.y-song-preview {
+  margin-top: .5rem;
+  white-space: pre-line;
+}
+.y-settings-divider {
+  margin: .5rem 0;
+  border: 1px solid white;
+}
+
+.y-album-preview {
+  margin-top: .5rem;
+  white-space: pre-line;
 }

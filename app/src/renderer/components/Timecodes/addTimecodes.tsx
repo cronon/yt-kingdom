@@ -1,5 +1,3 @@
-import { splitTimeUnit } from './splitTimeUnit';
-
 export function addTimecodes(timecode: string, duration: string): string {
   function parse(timecode: string) {
     const chunks = timecode.split(':');
@@ -28,4 +26,13 @@ export function addTimecodes(timecode: string, duration: string): string {
     return mm + ':' + ss;
   else
     return hh + ':' + mm + ':' + ss;
+}
+
+/**
+ * 70 returns 10 result, 1 bigger unit
+ */
+ export function splitTimeUnit(t: number): [number, number] {
+  const unit = t % 60;
+  const nextUnit = Math.floor((t - unit) / 60);
+  return [unit, nextUnit];
 }
