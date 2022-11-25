@@ -5,6 +5,9 @@
 * {
   box-sizing: border-box;
 }
+:root {
+  --error-color: rgb(255 235 0);
+}
 body {
   position: relative;
   color: white;
@@ -42,6 +45,7 @@ button:hover {
 .y-main {
   display: flex;
   flex-direction: column;
+  height: 100vh;
 }
 .y-login-bar {
   background: rgba(255,255,255,0.3);
@@ -59,13 +63,14 @@ button:hover {
 
 }
 .y-login-error {
-  color: rgb(255 235 0);
+  color: var(--error-color);
 }
 .y-stage {
   display: flex;
   flex-direction: row;
   padding: 0 1rem;
   gap: 1rem;
+  flex-grow: 1;
 }
 .y-playlist {
   width: 50%;
@@ -103,4 +108,47 @@ button:hover {
 .y-album-preview {
   margin-top: .5rem;
   white-space: pre-line;
+}
+
+.y-statusbar {
+  background: rgba(255,255,255,0.3);
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 1rem;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-height: 75vh;
+  margin-bottom: 0.5rem;
+  margin-top: 1rem;
+}
+.y-statusbar-open {
+  background: linear-gradient(200.96deg, #7a2c9e -29.09%, #dd5789 51.77%,  #fedc2a 129.35%);
+  gap: 1rem;
+}
+.y-progressbar {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 2.4rem;
+}
+.y-progressbar.y-inprogress {
+  color: white
+}
+.y-progressbar.y-success {
+  color: #8cff77;
+}
+.y-progressbar.y-error {
+  color: var(--error-color);
+}
+.y-progressbar button {
+
+}
+.y-logs {
+  white-space: pre-wrap;
+  background: black;
+  font-family: monospace;
+  overflow: auto;
+  padding: .5rem;
 }
