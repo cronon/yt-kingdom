@@ -3,6 +3,10 @@ import { Song } from "common/song";
 import { useState } from "react";
 import { timecodes } from "./components/Timecodes/timecodes";
 
+const zip = <A, B>(a: A[], b:B[]) =>  a.map(function(e, i) {
+  return [e, b[i]] as ([A, B])
+});
+
 interface UseFiles {
   songs: Song[];
   addFilesDialog: () => void;
@@ -22,6 +26,8 @@ interface UseFiles {
 
   uploadAlbum: boolean;
   setUploadAlbum: (newUploadAlbum: boolean) => void;
+
+  status: string;
 }
 
 let _id = 0;
@@ -90,6 +96,7 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
 
   const [uploadAlbum, setUploadAlbum] = useState(true);
 
+  const [status, setStatus] = useState('Idle');
 
   const addFilesDialog = async () => {
     if (isLoading) return;
@@ -109,8 +116,10 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
   async function startConvert() {
     setIsLoading(true);
     try {
+      setStatus('Converting songs');
       await window.electronApi.convertSongs({songs, picture});
     } finally {
+      setStatus('Idle')
       setIsLoading(false);
     }
   }
@@ -118,8 +127,15 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
   async function convertAndUpload(){
     setIsLoading(true);
     try {
+      setStatus('Converting songs')
+      console.log('set status 1111111111111')
       const mp4Paths = await window.electronApi.convertSongs({songs, picture});
-      const albumMp4 = await window.electronApi.concatVideos({mp4Paths});
+      let albumMp4 = '';
+      if (uploadAlbum) {
+        setStatus('Concatenating album video')
+        albumMp4 = await window.electronApi.concatVideos({mp4Paths});
+      }
+
 
       // const mp4Paths = [
       //     "C:\\Users\\HP-PC\\Documents\\pet\\uploader\\app\\temp\\Resignostic – Impatiently Doom Waits (Wax Ghosts version).mp3.mp4",
@@ -128,22 +144,32 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
       // const albumMp4 = `C:\\Users\\HP-PC\\Documents\\pet\\uploader\\app\\temp\\total.mp4`
 
       // const songIds: string[] = [];
-      // for (const mp4Path of mp4Paths) {
-      //   const title = songs[i].title;
-      //   const description = getSongPreview(songs[i]);
+      // const songsWithMp4 = zip(mp4Paths, songs);
+      // for (const songWithMp4 of songsWithMp4) {
+      //   const title = songWithMp4[1].title;
+      //   const description = getSongPreview(songWithMp4[1]);
+      //   const mp4Path = songWithMp4[0];
+      //   setStatus('Uploading video ' + title)
       //   const res = await window.electronApi.youtubeUpload({mp4Path, title, description});
       //   songIds.push(res.id)
       // }
+      // let albumId = '';
+      // let playlistId = '';
+      // if (uploadAlbum) {
+      //   setStatus('Uploading album video')
+      //   const albumUploadRes = await window.electronApi.youtubeUpload({
+      //     mp4Path: albumMp4,
+      //     title: albumName,
+      //     description: albumPreview
+      //   });
+      //   albumId = albumUploadRes.id;
 
-      // const uploadAlbum = await window.electronApi.youtubeUpload({
-      //   mp4Path: albumMp4,
-      //   title: albumName,
-      //   description: albumPreview
-      // });
-      // const albumId = uploadAlbum.id;
+      //   setStatus('Creating playlist')
+      //   const playlistRes = await window.electronApi.youtubeCreatePlaylist({videoIds: songIds, name: albumName})
+      //   playlistId = playlistRes.id;
+      // }
 
-      // const playlistRes = await window.electronApi.youtubeCreatePlaylist({videoIds: songIds, name: albumName})
-      // const playlistId = playlistRes.id;
+
 
       const playlistId = 'PLTrC-Aycr2aVEdT9THLUs7HRN6yq0KOrp';
       const songIds = ['MsP-LQtTrzk', '9zfExPGaBmM']
@@ -155,6 +181,7 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
       console.log('albumLink', albumLink)
       console.log('playlistLink', playlistLink)
     } finally {
+      setStatus('Idle')
       setIsLoading(false);
     }
 
@@ -163,5 +190,7 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
   return {songs, addFilesDialog, picture, startConvert, convertAndUpload,
     songTemplate, setSongTemplate, songPreview,
     albumTemplate, setAlbumTemplate, albumPreview,
-    albumName, setAlbumName, uploadAlbum, setUploadAlbum}
+    albumName, setAlbumName, uploadAlbum, setUploadAlbum,
+    status
+  }
 }

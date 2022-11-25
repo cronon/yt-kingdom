@@ -42,9 +42,10 @@ const Main = () => {
     songTemplate, setSongTemplate, songPreview,
     albumTemplate, setAlbumTemplate, albumPreview,
     albumName, setAlbumName,
-    uploadAlbum, setUploadAlbum
+    uploadAlbum, setUploadAlbum,
+    status
   } = useFiles({isLoading, setIsLoading, showMockData});
-
+  console.log('Upaded status', status)
   return (
     <div className="y-main">
       <GlobalOverlay isLoading={isLoading} />
@@ -87,7 +88,7 @@ const Main = () => {
             </div>}
         </div>
       </div>
-      <Statusbar status={'converting 123/123123 5 min left'} />
+      <Statusbar status={status} />
     </div>
   );
 };
@@ -141,7 +142,7 @@ function Statusbar({status}: {status: string}) {
   }, [logsOpen])
   return <div className={statusClass} style={{zIndex: zIndexes.statusbar}}>
     <div className="y-progressbar">
-      Converting 123123/10012312 5 min left
+      {status}
       {!logsOpen && <button onClick={e => setLogsOpen(true)}>&#65085; Show logs</button>}
       {logsOpen && <button onClick={e => setLogsOpen(false)}>︾ Hide logs</button>}
     </div>
