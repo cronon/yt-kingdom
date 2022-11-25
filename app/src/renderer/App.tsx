@@ -27,10 +27,10 @@ const Main = () => {
   const [isLoading, setIsLoading] = useState(defaultData.isLoading);
   const {songs, addFilesDialog, picture, startConvert, convertAndUpload,
     songTemplate, setSongTemplate, songPreview,
-    albumTemplate, setAlbumTemplate, albumPreview} = useFiles({isLoading, setIsLoading, showMockData});
+    albumTemplate, setAlbumTemplate, albumPreview,
+    albumName, setAlbumName,
+    uploadAlbum, setUploadAlbum} = useFiles({isLoading, setIsLoading, showMockData});
 
-
-  const [uploadAlbum, setUploadAlbum] = useState(true);
   return (
     <div className="y-main">
       <GlobalOverlay isLoading={isLoading} />
@@ -49,8 +49,8 @@ const Main = () => {
             <div className="y-song-settings">
               <div>
                 <label>
-                  <div>Template</div>
-                  <textarea value={songTemplate} rows={3} placeholder="Use %track% to place song title" onChange={e => setSongTemplate(e.target.value)} />
+                  <div>Song description template</div>
+                  <textarea value={songTemplate} rows={5} placeholder="Use %track% to place song title" onChange={e => setSongTemplate(e.target.value)} />
                 </label>
               </div>
               <div>Preview:</div>
@@ -58,14 +58,19 @@ const Main = () => {
             </div>
             <div className="y-settings-divider"></div>
             <label>Upload album: <input type="checkbox" checked={uploadAlbum} onChange={e => setUploadAlbum(e.target.checked)} /></label>
+            {uploadAlbum &&
             <div className="y-album-settings">
+                <label className="y-album-name">
+                    Album video and playlist name
+                    <input type="text" value={albumName} onChange={e => setAlbumName(e.target.value)}/>
+                </label>
                 <label>
-                  <div>Album video template</div>
+                  <div>Album video description</div>
                   <textarea value={albumTemplate} rows={5} placeholder="Use %playlist% to place song title" onChange={e => setAlbumTemplate(e.target.value)} />
                 </label>
               <div>Preview:</div>
               <div className="y-album-preview">{albumPreview}</div>
-            </div>
+            </div>}
         </div>
       </div>
     </div>
@@ -74,7 +79,6 @@ const Main = () => {
 
 function LoginBar(props: {showMockData: boolean, isLoading: boolean, setIsLoading: (e: boolean) => void}): JSX.Element {
   const {isLoggedIn, username, loginError, login} = useLogin(props);
-  console.log('useLogin', isLoggedIn, username)
   const usernameEl = isLoggedIn && <div className="y-username">@{username}</div>;
   const loginButton = !isLoggedIn && <button className="y-login-button " type="button" onClick={login}>Login</button>
   const loginErrorEl = loginError && <div className="y-login-error">Login error: {loginError}</div>

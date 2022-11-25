@@ -1,3 +1,7 @@
+.y-pictureShow {
+  display: flex;
+  justify-content: center;
+}
 .y-pictureShow img {
   /* 16:9 ration - the same as in youtube */
   width: 400px;

@@ -14,9 +14,14 @@ interface UseFiles {
   setSongTemplate: (newSongTemplate: string) => void;
   songPreview: string;
 
+  albumName: string;
+  setAlbumName: (newAlbumName: string) => void;
   albumTemplate: string;
   setAlbumTemplate: (newAlbumTemplate: string) => void;
   albumPreview: string;
+
+  uploadAlbum: boolean;
+  setUploadAlbum: (newUploadAlbum: boolean) => void;
 }
 
 let _id = 0;
@@ -31,24 +36,25 @@ function getDefaultData(showMockData: boolean) {
     return {
       isLoading: false,
       songs: [{
-        id: '1',
+        id: '-1',
         path: cPath + 'Resignostic – Impatiently Doom Waits (Wax Ghosts version).mp3',
         title: 'Resignostic – Impatiently Doom Waits (Wax Ghosts version)',
         duration: '00:03:45',
       },
       {
-        id: '2',
+        id: '-2',
         // path: cPath + 'Camellia (Feat. Nanahira) - ベースラインやってる？笑 (Can I Friend You On Bassbook Lol).mp3',
         path: cPath + 'sample027.mp3',
         title: 'Camellia (Feat. Nanahira) - ベースラインやってる？笑 (Can I Friend You On Bassbook Lol)',
-        duration: '00:04:47',
+        duration: '00:00:27',
       }] as Song[],
       picture: {ext: 'png', base64: '', path: cPath + 'cover.jpg'},
       songTemplate: `Kiara - %track%
 Mustard seed (2021)
+
 https://soundcloud.com/kiarabirth`,
-      albumTemplate: `Mustard seed (2021)
-https://soundcloud.com/kiarabirth
+      albumName: 'Kiara - Mustard seed (2021)',
+      albumTemplate: `https://soundcloud.com/kiarabirth
 #electronic #ambient #dungeonSynth
 
 %playlist%`
@@ -59,6 +65,7 @@ https://soundcloud.com/kiarabirth
       songs: [],
       picture: {ext: 'png', base64: '', path: ''},
       songTemplate: '',
+      albumName: '',
       albumTemplate: '',
     }
   }
@@ -73,11 +80,15 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
   const getSongPreview = (song: Song) =>  songTemplate.replaceAll('%track%', song.title);
   const songPreview = songs.length === 0 ? songTemplate : getSongPreview(songs[0]);
 
+  const [albumName, setAlbumName] = useState(defaultData.albumName);
   const [albumTemplate, setAlbumTemplate] = useState(defaultData.albumTemplate);
-  const timecodesString = timecodes(songs).reduce((result, {title, timecode}) => {
-    return result + '\n' + timecode + ' ' + title;
-  }, '');
+  const timecodesString = timecodes(songs).map(({title, timecode}) => {
+    return timecode + ' ' + title;
+  }).join('\n')
+
   const albumPreview = albumTemplate.replaceAll('%playlist%', timecodesString);
+
+  const [uploadAlbum, setUploadAlbum] = useState(true);
 
 
   const addFilesDialog = async () => {
@@ -108,20 +119,41 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
     setIsLoading(true);
     try {
       // const mp4Paths = await window.electronApi.convertSongs({songs, picture});
-      const mp4Paths = [
-        "C:\\Users\\HP-PC\\Documents\\pet\\uploader\\app\\temp\\Resignostic – Impatiently Doom Waits (Wax Ghosts version).mp3.mp4",
-        "C:\\Users\\HP-PC\\Documents\\pet\\uploader\\app\\temp\\Camellia (Feat. Nanahira) - ベースラインやってる？笑 (Can I Friend You On Bassbook Lol).mp3.mp4"
-    ]
-      // const totalMp4 = await window.electronApi.concatVideos({mp4Paths});
-      const totalMp4 = `C:\\Users\\HP-PC\\Documents\\pet\\uploader\\app\\temp\\total.mp4`
-      const uploadSongs = await Promise.all(mp4Paths.map(async (mp4Path, i) => {
-        const title = songs[i].title;
-        const description = getSongPreview(songs[i]);
-        const {url, err} = await window.electronApi.youtubeUpload({mp4Path, title, description});
-        if (err) throw new Error(err);
-        return url;
-      }))
-      console.log(uploadSongs)
+        const mp4Paths = [
+          "C:\\Users\\HP-PC\\Documents\\pet\\uploader\\app\\temp\\Resignostic – Impatiently Doom Waits (Wax Ghosts version).mp3.mp4",
+          "C:\\Users\\HP-PC\\Documents\\pet\\uploader\\app\\temp\\sample027.mp3.mp4"
+      ]
+      // console.log(mp4Paths)
+      // const albumMp4 = await window.electronApi.concatVideos({mp4Paths});
+      const albumMp4 = `C:\\Users\\HP-PC\\Documents\\pet\\uploader\\app\\temp\\total.mp4`
+
+      // const songIds: string[] = [];
+      // for (const mp4Path of mp4Paths) {
+      //   const title = songs[i].title;
+      //   const description = getSongPreview(songs[i]);
+      //   const res = await window.electronApi.youtubeUpload({mp4Path, title, description});
+      //   songIds.push(res.id)
+      // }
+
+      // const uploadAlbum = await window.electronApi.youtubeUpload({
+      //   mp4Path: albumMp4,
+      //   title: albumName,
+      //   description: albumPreview
+      // });
+      // const albumId = uploadAlbum.id;
+
+      // const playlistRes = await window.electronApi.youtubeCreatePlaylist({videoIds: songIds, name: albumName})
+      // const playlistId = playlistRes.id;
+
+      const playlistId = 'PLTrC-Aycr2aVEdT9THLUs7HRN6yq0KOrp';
+      const songIds = ['MsP-LQtTrzk', '9zfExPGaBmM']
+      const albumId = 'ab5_c37mg-o';
+
+      const albumLink = 'https://youtu.be/'+albumId;
+      const playlistLink = 'https://youtu.be/'+songIds[0]+'?list='+playlistId;
+
+      console.log('albumLink', albumLink)
+      console.log('playlistLink', playlistLink)
     } finally {
       setIsLoading(false);
     }
@@ -130,5 +162,6 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
 
   return {songs, addFilesDialog, picture, startConvert, convertAndUpload,
     songTemplate, setSongTemplate, songPreview,
-    albumTemplate, setAlbumTemplate, albumPreview}
+    albumTemplate, setAlbumTemplate, albumPreview,
+    albumName, setAlbumName, uploadAlbum, setUploadAlbum}
 }

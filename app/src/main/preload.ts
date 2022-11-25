@@ -22,8 +22,11 @@ const electronApi = {
   async youtubeLogin(): Promise<{username: string, loginError: string | null}> {
     return ipcRenderer.invoke('youtubeLogin')
   },
-  async youtubeUpload(params: {mp4Path: string, title: string, description: string}): Promise<{url: string, err: string | null}> {
-    return ipcRenderer.invoke('youtubeUpload', params)
+  async youtubeUpload(params: {mp4Path: string, title: string, description: string}): Promise<{id: string, err: string | null}> {
+    return ipcRenderer.invoke('youtubeUpload', params);
+  },
+  async youtubeCreatePlaylist(params: {videoIds: string[], name: string}): Promise<{id: string, err: string | null}> {
+    return ipcRenderer.invoke('youtubeCreatePlaylist', params);
   }
 
 }
