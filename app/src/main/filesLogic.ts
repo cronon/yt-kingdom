@@ -28,14 +28,12 @@ tempFolder.getFolder()
 
 export function filesLogic(ipcMain: Electron.IpcMain) {
   ipcMain.handle('openFileDialog', fileOpenDialog)
-  ipcMain.handle('convertSongs', async (event, args: {songs: Song[], picture: Picture}) => {
-    const {songs, picture} = args;
-    logger.info('Start converting songs', JSON.stringify(songs))
-    const mp4Paths = await Promise.all(songs.map(async song => {
-      return convertSong(song.path, picture.path);
-    }));
-    logger.info('Converted songs', ...mp4Paths)
-    return mp4Paths;
+  ipcMain.handle('convertSong', async (event, args: {song: Song, picture: Picture}) => {
+    const {song, picture} = args;
+    logger.info('Start converting song', JSON.stringify(song));
+    const mp4Path = await convertSong(song.path, picture.path)
+    logger.info('Converted songs', mp4Path)
+    return mp4Path;
   })
   ipcMain.handle('concatVideos', async (event, args: {mp4Paths: string[]}) => {
     return concatVideos(args.mp4Paths);

@@ -142,7 +142,7 @@ function Statusbar({status}: {status: string}) {
   }, [logsOpen])
   return <div className={statusClass} style={{zIndex: zIndexes.statusbar}}>
     <div className="y-progressbar">
-      {status}
+      <span className="y-status-text" title={status}>{status}</span>
       {!logsOpen && <button onClick={e => setLogsOpen(true)}>&#65085; Show logs</button>}
       {logsOpen && <button onClick={e => setLogsOpen(false)}>︾ Hide logs</button>}
     </div>

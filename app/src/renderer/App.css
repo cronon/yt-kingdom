@@ -144,8 +144,13 @@ button:hover {
 .y-progressbar.y-error {
   color: var(--error-color);
 }
+.y-status-text {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow-x: hidden;
+}
 .y-progressbar button {
-
+  white-space: nowrap;
 }
 .y-logs {
   white-space: pre-wrap;

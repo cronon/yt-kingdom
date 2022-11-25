@@ -116,8 +116,10 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
   async function startConvert() {
     setIsLoading(true);
     try {
-      setStatus('Converting songs');
-      await window.electronApi.convertSongs({songs, picture});
+      for (const song of songs) {
+        setStatus('Converting song ' + song.title);
+        await window.electronApi.convertSong({song, picture});
+      }
     } finally {
       setStatus('Idle')
       setIsLoading(false);
@@ -127,12 +129,17 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
   async function convertAndUpload(){
     setIsLoading(true);
     try {
-      setStatus('Converting songs')
-      console.log('set status 1111111111111')
-      const mp4Paths = await window.electronApi.convertSongs({songs, picture});
+      const songsWithMp4: [string, Song][] = []
+      for (const song of songs) {
+        setStatus('Converting song '+song.title);
+        const mp4Path = await window.electronApi.convertSong({song, picture})
+        songsWithMp4.push([mp4Path, song]);
+      }
+
       let albumMp4 = '';
       if (uploadAlbum) {
-        setStatus('Concatenating album video')
+        setStatus('Concatenating album video');
+        const mp4Paths = songsWithMp4.map(sm => sm[0]);
         albumMp4 = await window.electronApi.concatVideos({mp4Paths});
       }
 

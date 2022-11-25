@@ -8,8 +8,8 @@ const electronApi = {
   async openFileDialog(): Promise<Array<Picture | Song>> {
     return ipcRenderer.invoke('openFileDialog')
   },
-  async convertSongs(params: {songs: Song[], picture: Picture}): Promise<string[]> {
-    return ipcRenderer.invoke('convertSongs', params)
+  async convertSong(params: {song: Song, picture: Picture}): Promise<string> {
+    return ipcRenderer.invoke('convertSong', params)
   },
   async concatVideos(params: {mp4Paths: string[]}): Promise<string> {
     return ipcRenderer.invoke('concatVideos', params)
