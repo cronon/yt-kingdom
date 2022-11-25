@@ -1,4 +1,8 @@
 /* eslint global-require: off, no-console: off, promise/always-return: off */
+process.on('uncaughtException', function (error) {
+  console.error(error);
+  process.exit(1);
+})
 
 /**
  * This module executes inside of electron's main process. You can start
@@ -78,6 +82,8 @@ app
     logger.error(err);
     app.exit(1);
   });
+
+
 
 async function createWindow() {
   if (isDebug) {

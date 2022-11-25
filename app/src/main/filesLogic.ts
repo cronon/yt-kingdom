@@ -18,7 +18,6 @@ const tempFolder = {
   },
   getFolder() {
     if (!fs.existsSync(this.path)) {
-    console.log('CREATING DIR', this.path)
       fs.mkdirSync(this.path, {recursive: true});
     }
     return this.path
