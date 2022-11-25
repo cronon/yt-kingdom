@@ -118,13 +118,14 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
   async function convertAndUpload(){
     setIsLoading(true);
     try {
-      // const mp4Paths = await window.electronApi.convertSongs({songs, picture});
-        const mp4Paths = [
-          "C:\\Users\\HP-PC\\Documents\\pet\\uploader\\app\\temp\\Resignostic – Impatiently Doom Waits (Wax Ghosts version).mp3.mp4",
-          "C:\\Users\\HP-PC\\Documents\\pet\\uploader\\app\\temp\\sample027.mp3.mp4"
-      ]
-      // const albumMp4 = await window.electronApi.concatVideos({mp4Paths});
-      const albumMp4 = `C:\\Users\\HP-PC\\Documents\\pet\\uploader\\app\\temp\\total.mp4`
+      const mp4Paths = await window.electronApi.convertSongs({songs, picture});
+      const albumMp4 = await window.electronApi.concatVideos({mp4Paths});
+
+      // const mp4Paths = [
+      //     "C:\\Users\\HP-PC\\Documents\\pet\\uploader\\app\\temp\\Resignostic – Impatiently Doom Waits (Wax Ghosts version).mp3.mp4",
+      //     "C:\\Users\\HP-PC\\Documents\\pet\\uploader\\app\\temp\\sample027.mp3.mp4"
+      // ]
+      // const albumMp4 = `C:\\Users\\HP-PC\\Documents\\pet\\uploader\\app\\temp\\total.mp4`
 
       // const songIds: string[] = [];
       // for (const mp4Path of mp4Paths) {

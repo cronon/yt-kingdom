@@ -4,6 +4,7 @@ import { app, dialog } from "electron";
 import path from "path";
 import fs from 'fs';
 import {spawn} from 'child_process';
+import {logger} from './logger';
 
 var pathToFfmpeg =  require('ffmpeg-static-electron').path.replace('app.asar', 'app.asar.unpacked');
 
@@ -29,23 +30,19 @@ export function filesLogic(ipcMain: Electron.IpcMain) {
   ipcMain.handle('openFileDialog', fileOpenDialog)
   ipcMain.handle('convertSongs', async (event, args: {songs: Song[], picture: Picture}) => {
     const {songs, picture} = args;
-    const convertedSongs = await convertSongs(songs, picture);
-    console.log(convertedSongs)
-    return convertedSongs;
+    logger.info('Start converting songs', JSON.stringify(songs))
+    const mp4Paths = await Promise.all(songs.map(async song => {
+      return convertSong(song.path, picture.path);
+    }));
+    logger.info('Converted songs', ...mp4Paths)
+    return mp4Paths;
   })
   ipcMain.handle('concatVideos', async (event, args: {mp4Paths: string[]}) => {
     return concatVideos(args.mp4Paths);
   })
 }
-
-async function convertSongs(songs: Song[], picture: Picture): Promise<string[]> {
-  const mp4Paths = await Promise.all(songs.map(async song => {
-    return convertSong(song.path, picture.path);
-  }));
-  return mp4Paths;
-}
-
 async function concatVideos(mp4Paths: string[]): Promise<string> {
+  logger.info('concat videos', ...mp4Paths)
   const listFilePath = tempFolder.tempPath('list.txt');
   // file '/mnt/share/file 3'\''.wav'
   const listFileContents = mp4Paths.map(p => `file '${p.replace(/\'/g, `\\'`)}'`).join('\n')
@@ -85,24 +82,24 @@ async function convertSong(songPath: string, picturePath: string): Promise<strin
 }
 
 async function ffmpegCommand(args: string[], onStdout?: (data: string) => void, onStdErr?: (data: string) => void): Promise<{allstdout: string, allstderr: string}> {
-  console.log(pathToFfmpeg + ' ' + args.join(' '));
+  logger.info(pathToFfmpeg + ' ' + args.join(' '));
 
   const command = spawn(pathToFfmpeg, args);
   let allstdout: string = '';
   let allstderr: string = '';
   return new Promise((res, rej) => {
     command.stdout.on('data', (data: any) => {
-      console.log(`stdout: ${data}`);
+      logger.info(`ffmpeg stdout: ${data}`);
       allstdout += data;
     });
 
     command.stderr.on('data', (data: any) => {
-      console.log(`stderr: ${data}`);
+      logger.info(`ffmpeg stderr: ${data}`);
       allstderr += data;
     });
 
     command.on('close', (code: any) => {
-      console.log(`ffmpeg process exited with code ${code}`);
+      logger.info(`ffmpeg process exited with code ${code}`);
       if (code === 0) {
         res({
           allstdout,

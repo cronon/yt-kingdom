@@ -71,6 +71,7 @@ button:hover {
   padding: 0 1rem;
   gap: 1rem;
   flex-grow: 1;
+  padding-bottom: 3.75rem; /*height of the statusbar */
 }
 .y-playlist {
   width: 50%;
@@ -126,6 +127,7 @@ button:hover {
 .y-statusbar-open {
   background: linear-gradient(200.96deg, #7a2c9e -29.09%, #dd5789 51.77%,  #fedc2a 129.35%);
   gap: 1rem;
+  margin-bottom: 0;
 }
 .y-progressbar {
   display: flex;

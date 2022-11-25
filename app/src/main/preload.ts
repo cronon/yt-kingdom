@@ -27,6 +27,11 @@ const electronApi = {
   },
   async youtubeCreatePlaylist(params: {videoIds: string[], name: string}): Promise<{id: string, err: string | null}> {
     return ipcRenderer.invoke('youtubeCreatePlaylist', params);
+  },
+  async onLogs(callback: (log: string) => void) {
+    ipcRenderer.on('onLogs', (event, log: string) => {
+      callback(log);
+    })
   }
 
 }

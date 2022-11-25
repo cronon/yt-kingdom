@@ -1,7 +1,7 @@
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import icon from '../../assets/icon.svg';
 import './App.css';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import { Song } from 'common/song';
 import { timecodes } from './components/Timecodes/timecodes';
 import { Picture } from 'common/picture';
@@ -22,6 +22,19 @@ function getDefaultData(showMockData: boolean) {
   }
 }
 
+function useLogs() {
+  const [logs, setLogs] = useState<string[]>(['']);
+  useEffect(() => {
+    window.electronApi.onLogs((log: string) => {
+      setLogs(prevLogs => {
+        return prevLogs.concat(log);
+      })
+    });
+  }, []);
+  const stringLogs = logs.join('\n')
+  return {logs: stringLogs};
+}
+
 const Main = () => {
   const defaultData = getDefaultData(showMockData);
   const [isLoading, setIsLoading] = useState(defaultData.isLoading);
@@ -29,7 +42,8 @@ const Main = () => {
     songTemplate, setSongTemplate, songPreview,
     albumTemplate, setAlbumTemplate, albumPreview,
     albumName, setAlbumName,
-    uploadAlbum, setUploadAlbum} = useFiles({isLoading, setIsLoading, showMockData});
+    uploadAlbum, setUploadAlbum
+  } = useFiles({isLoading, setIsLoading, showMockData});
 
   return (
     <div className="y-main">
@@ -73,66 +87,12 @@ const Main = () => {
             </div>}
         </div>
       </div>
-      <Statusbar />
+      <Statusbar status={'converting 123/123123 5 min left'} />
     </div>
   );
 };
 
-function Statusbar() {
-  const [logsOpen, setLogsOpen] = useState(false);
-  const statusClass = "y-statusbar " + (logsOpen ? 'y-statusbar-open' : '');
-  return <div className={statusClass}>
-    <div className="y-progressbar">
-      Converting 123123/10012312 5 min left
-      {!logsOpen && <button onClick={e => setLogsOpen(true)}>&#65085; Show logs</button>}
-      {logsOpen && <button onClick={e => setLogsOpen(false)}>︾ Hide logs</button>}
-    </div>
-    {logsOpen && <div className="y-logs">
-      {`UPLOADPROGERSS 4128768
-UPLOADPROGERSS 4194304
-UPLOADPROGERSS 4259840
-UPLOADPROGERSS 5499043
-UPLOADPROGERSS 4325376
-UPLOADPROGERSS 4390912
-UPLOADPROGERSS 4456448
-UPLOADPROGERSS 4521984
-UPLOADPROGERSS 4587520
-UPLOADPROGERSS 4618151
-{
-  kind: 'youtube#video',
-  etag: 'h6mcMoWML4yotlUnGjJhTChgzYg',
-  id: 'MsP-LQtTrzk',
-  snippet: {
-    publishedAt: '2022-11-25T08:22:49Z',
-    channelId: 'UC8TQpd6N4CMKXi7qNNRfduA',
-    title: 'Camellia (Feat. Nanahira) - ÒâÖÒâ╝Òé╣Òâ®ÒéñÒâ│ÒéäÒüúÒüªÒéï´╝ƒþ¼æ (Can I Friend You On Bassbook Lol)',
-    description: 'Kiara - Camellia (Feat. Nanahira) - ÒâÖÒâ╝Òé╣Òâ®ÒéñÒâ│ÒéäÒüúÒüªÒéï´╝ƒþ¼æ (Can I Friend You On Bassbook Lol)\n' +
-      'Mustard seed (2021)\n' +
-      '\n' +
-      'https://soundcloud.com/kiarabirth',
-    thumbnails: { default: [Object], medium: [Object], high: [Object] },
-    channelTitle: 'Cronon11',
-    categoryId: '10',
-    liveBroadcastContent: 'none',
-    localized: {
-      title: 'Camellia (Feat. Nanahira) - ÒâÖÒâ╝Òé╣Òâ®ÒéñÒâ│ÒéäÒüúÒüªÒéï´╝ƒþ¼æ (Can I Friend You On Bassbook Lol)',
-      description: 'Kiara - Camellia (Feat. Nanahira) - ÒâÖÒâ╝Òé╣Òâ®ÒéñÒâ│ÒéäÒüúÒüªÒéï´╝ƒþ¼æ (Can I Friend You On Bassbook Lol)\n' +
-        'Mustard seed (2021)\n' +
-        '\n' +
-        'https://soundcloud.com/kiarabirth'
-    }
-  },
-  status: {
-    uploadStatus: 'uploaded',
-    privacyStatus: 'private',
-    license: 'youtube',
-    embeddable: true,
-    publicStatsViewable: true
-  }
-}`}
-    </div>}
-  </div>
-}
+
 
 function LoginBar(props: {showMockData: boolean, isLoading: boolean, setIsLoading: (e: boolean) => void}): JSX.Element {
   const {isLoggedIn, username, loginError, login} = useLogin(props);
@@ -165,13 +125,37 @@ function noZeroHH(timestamp: string) {
 }
 
 const zIndexes = {
+  statusbar: 2,
   globalOverlay: 1
 }
+
+function Statusbar({status}: {status: string}) {
+  const {logs} = useLogs()
+  const [logsOpen, setLogsOpen] = useState(false);
+  const statusClass = "y-statusbar " + (logsOpen ? 'y-statusbar-open' : '');
+  const logsRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (logsRef.current) {
+      logsRef.current.scrollTop = logsRef.current.scrollHeight;
+    }
+  }, [logsOpen])
+  return <div className={statusClass} style={{zIndex: zIndexes.statusbar}}>
+    <div className="y-progressbar">
+      Converting 123123/10012312 5 min left
+      {!logsOpen && <button onClick={e => setLogsOpen(true)}>&#65085; Show logs</button>}
+      {logsOpen && <button onClick={e => setLogsOpen(false)}>︾ Hide logs</button>}
+    </div>
+    {logsOpen && <div className="y-logs" ref={logsRef}>
+      {logs}
+    </div>}
+  </div>
+}
+
 function GlobalOverlay({isLoading}: {isLoading: boolean}) {
   const style = {
     position: 'absolute',
     top: 0,
-    bottom: 0,
+    bottom: '4.75rem',
     left: 0,
     right: 0,
     background: 'rgba(255,255,255,0.7)',

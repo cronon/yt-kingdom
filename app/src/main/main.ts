@@ -18,7 +18,7 @@ import fs from 'fs';
 import {filesLogic} from './filesLogic';
 import { getUsername, youtubeLogic } from './youtubeLogic';
 import { createAuth } from './googleAuth';
-
+import {logger} from './logger';
 
 
 class AppUpdater {
@@ -123,7 +123,7 @@ async function createWindow() {
   });
 
   mainWindow.webContents.send('onLoginChange', auth);
-
+  logger.subs.push((level, message) => mainWindow?.webContents.send('onLogs', message))
 
 
   mainWindow.loadURL(resolveHtmlPath('index.html'));
@@ -142,7 +142,7 @@ async function createWindow() {
       //   mainWindow.show();
       // }
 
-      mainWindow.show();
+      // mainWindow.show();
 
       // if (isDebug) {
         mainWindow.show()
@@ -182,5 +182,5 @@ async function installExtensions() {
       extensions.map((name) => installer[name]),
       forceDownload
     )
-    .catch(console.log);
+    .catch(logger.error);
 };
