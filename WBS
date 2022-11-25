@@ -2,68 +2,27 @@ The user flow is the following: open the app, move files into the app or select 
 The videos are generated, then the user presses upload button, everything is uploaded on Youtube and it shows you the links to the videos, playlist and your channel content maybe.
 
 
-Deliverables and work
+Deliverables and work left
 
-electron chrome
-	install react to electron ? 30m
-	prepare structure for back and front
-		how to require css files ? 10m
-		how to organize communication between client and node ? 30m
-common design with big mild-orange letters
-	spent 10m googling for a desktop design system 10m
-	choose and apply theme 15m
-	install it 15m
-	place all the elements on the screen 15m
-login to youtube button
-	code 30m
-	where does electron store creds? It will be tedious to log in each time the app reruns 30m
 generate videos
 	CRUD + sortable songs list
-		files datastructure 30m
-		add files 15m
-		read files mp3 1h ? - only some idea what to do about it
-		read files jpg/png 1h ? - only some idea what to do about it
 		sortable list 30m
-			if the design system doesn't have it, it can be taken from the priority table
 		editable list 30m
 		delete one and all 15m
-	"Generate" button
-		button 15m
-		install ffmpeg locally 15m
-		send command to ffmpeg 1h ? how to integrate with other programs in elector? with ffmpeg in js?
 	progress bar
-		make some meaning from ffmpeg output 1h ? at least see about which files it talks about
 		make better meaning from ffmpeg output 1h ? understand how much time left
-generate description
-	song description with template
-		textarea and preview 10m
-	album description with playlist with timecodes
-		textarea and preview 10m
-		calculate timecodes 15m
 
 upload to youtube
 	upload videos
-		upload button
-			start uploading 15m
-			make everything gray 10m
-		progressbar
-			code 15m
+    where to store client_secret
 		youtube permissions for bigger quota
 			ask youtube for the bigger quota ? 2h-2d
-				read their requirements 10m
-				prepare papers ?
-				gain some courage ?
-	create youtube playlist
-		create playlist code 30m ? haven't tried it yet
-	success message
-		code 10m
+				waiting for insturctions
+
 exe file
 	bundled code
-		run build 10m
-		find out how to distrubute electron apps ? 20m
 		how to do updates ? 1h
 		preferably with ffmpeg included to the bundle
-			find out how to include everything into a single exe ? 20m
 	published to github
 		how to make releases in github ? 1h
 
@@ -84,11 +43,63 @@ Criticals:
 	distribution and bundling - I won't be able to use the app in dev mode only
 	yt quota - 6 videos a day won't be enough, hardly even for test
 		Either try to work with several project_ids, implement a queue or leave the uploading part manual, and try to automate somehow filling up the descriptions
-  uploading part
-    generate description
-    upload videos
-    create playlists
+  where to store client_secret
+  how to make releases on github in order to not run with an usb stick for tests
+  in case of connection errors another interface with progress per file
 
 Done
 	ffmpeg convertations - will already help me a lot
 	timecodes creation - will already help me a lot
+  uploading - done
+
+electron chrome
+	install react to electron ? 30m
+	prepare structure for back and front
+		how to require css files ? 10m
+		how to organize communication between client and node ? 30m
+common design with big mild-orange letters
+	spent 10m googling for a desktop design system 10m
+	choose and apply theme 15m
+	install it 15m
+	place all the elements on the screen 15m
+login to youtube button
+	code 30m
+	where does electron store creds? It will be tedious to log in each time the app reruns 30m
+generate videos
+	CRUD + sortable songs list
+		files datastructure 30m
+		add files 15m
+		read files mp3 1h ? - only some idea what to do about it
+		read files jpg/png 1h ? - only some idea what to do about it
+	"Generate" button
+		button 15m
+		install ffmpeg locally 15m
+		send command to ffmpeg 1h ? how to integrate with other programs in elector? with ffmpeg in js?
+	progress bar
+		make some meaning from ffmpeg output 1h ? at least see about which files it talks about
+generate description
+	song description with template
+		textarea and preview 10m
+	album description with playlist with timecodes
+		textarea and preview 10m
+		calculate timecodes 15m
+upload to youtube
+	upload videos
+		upload button
+			start uploading 15m
+			make everything gray 10m
+		progressbar
+			code 15m
+		youtube permissions for bigger quota
+			ask youtube for the bigger quota ? 2h-2d
+				read their requirements 10m
+        	create youtube playlist
+		create playlist code 30m ? haven't tried it yet
+      success message
+        code 10m
+
+exe file
+	bundled code
+		run build 10m
+		preferably with ffmpeg included to the bundle
+			find out how to include everything into a single exe ? 20m

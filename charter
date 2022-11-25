@@ -13,16 +13,16 @@ Project Deliverables:
 An exe file with the app, published on github releases. The app works on win11 and win 8. Better without ffmpeg installation. Possible webapp version.
 
 
-Project Risks: 
-blockers: Lack of time or enthusiasm. Lack of something in youtube API or it'll require money. 
+Project Risks:
+blockers: Lack of time or enthusiasm. Lack of something in youtube API or it'll require money.
 slow downs: difficulties in working with youtube API or with electron.
 
 
-Budget: 
+Budget:
 4h a day for one week
 1.5h in evenings for 2 days a week
 
-Project Milestones: 
+Project Milestones:
 Charter - Nov 18
 PoC of YT API usage - Nov 18
 WBS - Nov 21

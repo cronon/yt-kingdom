@@ -14,11 +14,11 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import fs from 'fs';
 import {filesLogic} from './filesLogic';
 import { getUsername, youtubeLogic } from './youtubeLogic';
 import { createAuth } from './googleAuth';
 import {logger} from './logger';
+import { isDebug } from './config';
 
 
 class AppUpdater {
@@ -52,19 +52,9 @@ createAuth().then(async (params) => {
   }
 });
 
-const isDebug =
-  process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
-
 if (isDebug) {
   require('electron-debug')({ showDevTools: false });
 }
-
-
-
-
-/**
- * Add event listeners...
- */
 
 app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even
@@ -85,16 +75,9 @@ app
     });
   })
   .catch(err => {
-    logError(err);
+    logger.error(err);
+    app.exit(1);
   });
-
-function logError(e: any) {
-  if (process.env.DEBUG_PROD === 'true') {
-    fs.writeFileSync('log.log', e.toString())
-  } else {
-    console.error(e);
-  }
-}
 
 async function createWindow() {
   if (isDebug) {
@@ -135,22 +118,9 @@ async function createWindow() {
     if (process.env.START_MINIMIZED) {
       mainWindow.minimize();
     } else {
-
-      // if (isDebug) {
-
-      // } else {
-      //   mainWindow.show();
-      // }
-
-      // mainWindow.show();
-
-      // if (isDebug) {
         mainWindow.show()
-        mainWindow.maximize()
-        mainWindow.webContents.openDevTools();
-      // } else {
-      //   mainWindow.show();
-      // }
+        // mainWindow.maximize()
+        // mainWindow.webContents.openDevTools();
     }
   });
 

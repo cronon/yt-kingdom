@@ -4,7 +4,6 @@ import {URL} from 'url';
 import opn from 'open';
 import os from 'os';
 import keytar from 'keytar';
-import arrify = require('arrify');
 const destroyer = require('server-destroy');
 import {AddressInfo} from 'net';
 import { app } from 'electron';
@@ -47,6 +46,7 @@ function getKeys() {
 
 export async function createAuth(): Promise<{client: OAuth2Client, isLoggedIn: boolean}> {
   const keys = getKeys();
+  console.log('GOT KEYS', keys);
   const client = new OAuth2Client({
     clientId: keys.client_id,
     clientSecret: keys.client_secret,
@@ -67,7 +67,6 @@ export async function createAuth(): Promise<{client: OAuth2Client, isLoggedIn: b
       await saveTokens({refresh_token: tokens.refresh_token, access_token: tokens.access_token || ''});
     }
   });
-  console.log('CREATEING AUTOH', isLoggedIn)
   return {client, isLoggedIn}
 }
 
@@ -98,6 +97,7 @@ export async function authenticate(client: OAuth2Client, scopes: string[]): Prom
         }
 
         const code = searchParams.get('code');
+        console.log('GOT CODE', code)
         const {tokens} = await client.getToken({
           code: code!,
           redirect_uri: redirectUri.toString(),
@@ -128,7 +128,8 @@ export async function authenticate(client: OAuth2Client, scopes: string[]): Prom
         redirect_uri: redirectUri.toString(),
         access_type: 'offline',
         scope: scopes.join(' '),
-      });
+        ack_loopback_shutdown: "2022-08-31"
+      } as any);
       opn(authorizeUrl, {wait: false}).then(cp => cp.unref());
     });
     destroyer(server);

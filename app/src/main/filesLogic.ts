@@ -5,17 +5,21 @@ import path from "path";
 import fs from 'fs';
 import {spawn} from 'child_process';
 import {logger} from './logger';
+import { appFolder } from "./config";
 
 var pathToFfmpeg =  require('ffmpeg-static-electron').path.replace('app.asar', 'app.asar.unpacked');
+console.log(' PROCESS EXEC', process.execPath)
+console.log('TEMP FOLDER', (app as any).getAppPath('temp'))
 
 const tempFolder = {
-  path: path.join(app.getAppPath(), 'temp'),
+  path: path.join(appFolder, 'temp'),
   tempPath(file: string) {
     return path.join(this.getFolder(), file);
   },
   getFolder() {
     if (!fs.existsSync(this.path)) {
-      fs.mkdirSync(this.path);
+    console.log('CREATING DIR', this.path)
+      fs.mkdirSync(this.path, {recursive: true});
     }
     return this.path
   },
