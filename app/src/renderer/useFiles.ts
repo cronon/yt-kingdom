@@ -69,7 +69,7 @@ https://soundcloud.com/kiarabirth`,
     return {
       isLoading: false,
       songs: [],
-      picture: {ext: 'png', base64: '', path: ''},
+      picture: {ext: 'png', base64: '', path: './assets/emptyCover.jpg'},
       songTemplate: '',
       albumName: '',
       albumTemplate: '',
@@ -122,8 +122,7 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
     setIsLoading(true);
     try {
       for (const song of songs) {
-        setStatus('Converting song ' + song.title);
-        await window.electronApi.convertSong({song, picture});
+        await window.electronApi.convertSong({song, picture}, status => setStatus(status));
       }
     } finally {
       setStatus('Idle')
@@ -137,7 +136,7 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
       const songsWithMp4: [string, Song][] = []
       for (const song of songs) {
         setStatus('Converting song '+song.title);
-        const mp4Path = await window.electronApi.convertSong({song, picture})
+        const mp4Path = await window.electronApi.convertSong({song, picture}, () => {})
         songsWithMp4.push([mp4Path, song]);
       }
 

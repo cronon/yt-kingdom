@@ -6,6 +6,7 @@ import fs from 'fs';
 import {spawn} from 'child_process';
 import {logger} from './logger';
 import { appFolder } from "./config";
+import { OnProgress } from "common";
 
 var pathToFfmpeg =  require('ffmpeg-static-electron').path.replace('app.asar', 'app.asar.unpacked');
 console.log(' PROCESS EXEC', process.execPath)
@@ -33,14 +34,17 @@ export function filesLogic(ipcMain: Electron.IpcMain, send: (channel: string, ..
   ipcMain.handle('openFileDialog', async (event, args) => {
     const onProgress = (filename: string) => send('openFileDialogProgress', filename);
     return fileOpenDialog(onProgress)
-  })
+  });
+
   ipcMain.handle('convertSong', async (event, args: {song: Song, picture: Picture}) => {
     const {song, picture} = args;
     logger.info('Start converting song', JSON.stringify(song));
-    const mp4Path = await convertSong(song.path, picture.path)
+    const onProgress = (status: string) => send('convertSongProgress', status);
+    const mp4Path = await convertSong(song.path, picture.path, onProgress)
     logger.info('Converted songs', mp4Path)
     return mp4Path;
-  })
+  });
+
   ipcMain.handle('concatVideos', async (event, args: {mp4Paths: string[]}) => {
     return concatVideos(args.mp4Paths);
   })
@@ -66,7 +70,9 @@ async function concatVideos(mp4Paths: string[]): Promise<string> {
   return totalFilePath;
 }
 
-async function convertSong(songPath: string, picturePath: string): Promise<string> {
+const defaultPicture = path.join(appFolder, 'assets/emptyCover.jpg');
+async function convertSong(songPath: string, picturePath: string = defaultPicture, onProgress: OnProgress): Promise<string> {
+  console.log('picturePath', picturePath)
   const songName = path.basename(songPath);
   const mp4Path = tempFolder.tempPath(songName+'.mp4')
   await ffmpegCommand([
@@ -80,7 +86,15 @@ async function convertSong(songPath: string, picturePath: string): Promise<strin
     '-shortest', mp4Path,
   ],
     (data) => {},
-    (stderr) => {}
+    (stderr) => {
+
+      // ffmpeg stderr: frame=  738 fps=0.0 q=28.0 Lsize=     778kB time=00:00:27.24 bitrate= 234.1kbits/s speed=48.6x
+      const timeMatch = stderr.match(/time=(\d\d:\d\d:\d\d)/);
+      console.log(stderr)
+      if (timeMatch && timeMatch[1]) {
+        onProgress('Converting ' + timeMatch[1] + ' ' + songName + '')
+      }
+    }
   );
   return mp4Path;
 }
@@ -92,13 +106,15 @@ async function ffmpegCommand(args: string[], onStdout?: (data: string) => void, 
   let allstdout: string = '';
   let allstderr: string = '';
   return new Promise((res, rej) => {
-    command.stdout.on('data', (data: any) => {
-      logger.info(`ffmpeg stdout: ${data}`);
+    command.stdout.on('data', (data: string) => {
+      logger.info(`ffmpeg stdout: ${data.toString()}`);
+      onStdout && onStdout(data);
       allstdout += data;
     });
 
-    command.stderr.on('data', (data: any) => {
+    command.stderr.on('data', (data: string) => {
       logger.info(`ffmpeg stderr: ${data}`);
+      onStdErr && onStdErr(data.toString());
       allstderr += data;
     });
 

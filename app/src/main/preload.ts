@@ -2,10 +2,12 @@ import { Picture } from 'common/picture';
 import { Song } from 'common/song';
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 import { Auth } from 'common/auth';
+import { OnProgress } from 'common';
+
 
 
 const electronApi = {
-  async openFileDialog(onProgress: (readFile: string) => void): Promise<Array<Picture | Song>> {
+  async openFileDialog(onProgress: OnProgress): Promise<Array<Picture | Song>> {
     const cb = (_, file: string) => onProgress(file)
     ipcRenderer.on('openFileDialogProgress', cb);
     return ipcRenderer.invoke('openFileDialog').then(res => {
@@ -13,8 +15,13 @@ const electronApi = {
       return res;
     })
   },
-  async convertSong(params: {song: Song, picture: Picture}): Promise<string> {
-    return ipcRenderer.invoke('convertSong', params)
+  async convertSong(params: {song: Song, picture: Picture},  onProgress: OnProgress): Promise<string> {
+    const cb = (_, file: string) => onProgress(file);
+    ipcRenderer.on('convertSongProgress', cb)
+    return ipcRenderer.invoke('convertSong', params).then(res => {
+      ipcRenderer.off('convertSongProgress', cb);
+      return res;
+    })
   },
   async concatVideos(params: {mp4Paths: string[]}): Promise<string> {
     return ipcRenderer.invoke('concatVideos', params)
