@@ -140,6 +140,7 @@ button:hover {
   justify-content: space-between;
   width: 100%;
   font-size: 2.4rem;
+  height: 2.75rem; /* TODO jumping japanese characters */
 }
 .y-progressbar.y-inprogress {
   color: white
@@ -153,7 +154,7 @@ button:hover {
 .y-status-text {
   text-overflow: ellipsis;
   white-space: nowrap;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 .y-progressbar button {
   white-space: nowrap;

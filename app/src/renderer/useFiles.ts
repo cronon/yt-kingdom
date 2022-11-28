@@ -92,6 +92,7 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
     return timecode + ' ' + title;
   }).join('\n')
 
+
   const albumPreview = albumTemplate.replaceAll('%playlist%', timecodesString);
 
   const [uploadAlbum, setUploadAlbum] = useState(true);
@@ -101,8 +102,12 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
   const addFilesDialog = async () => {
     if (isLoading) return;
     setIsLoading(true);
-    const newFiles = await window.electronApi.openFileDialog();
+    setStatus('Open file');
+    const newFiles = await window.electronApi.openFileDialog(
+      (processingFile: string) => setStatus('Reading ' + processingFile)
+    );
     setIsLoading(false);
+    setStatus('Idle');
 
     const songs = newFiles
       .filter((f: any) => !!f.duration)

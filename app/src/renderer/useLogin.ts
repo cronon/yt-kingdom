@@ -36,7 +36,7 @@ export function useLogin({isLoading, setIsLoading, showMockData}: {showMockData:
       if (auth.username) setUsername(auth.username);
       if (auth.loginError) setLoginError(auth.loginError);
     });
-  });
+  }, []);
 
   async function login() {
     setIsLoading(true);

@@ -5,8 +5,13 @@ import { Auth } from 'common/auth';
 
 
 const electronApi = {
-  async openFileDialog(): Promise<Array<Picture | Song>> {
-    return ipcRenderer.invoke('openFileDialog')
+  async openFileDialog(onProgress: (readFile: string) => void): Promise<Array<Picture | Song>> {
+    const cb = (_, file: string) => onProgress(file)
+    ipcRenderer.on('openFileDialogProgress', cb);
+    return ipcRenderer.invoke('openFileDialog').then(res => {
+      ipcRenderer.off('openFileDialogProgress', cb);
+      return res;
+    })
   },
   async convertSong(params: {song: Song, picture: Picture}): Promise<string> {
     return ipcRenderer.invoke('convertSong', params)

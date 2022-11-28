@@ -35,8 +35,14 @@ class AppUpdater {
 
 let mainWindow: BrowserWindow | null = null;
 
-filesLogic(ipcMain);
-youtubeLogic(ipcMain);
+function send(channel: string, ...args: any[]){
+  if (mainWindow) {
+    mainWindow.webContents.send(channel, ...args);
+  }
+}
+
+filesLogic(ipcMain, send);
+youtubeLogic(ipcMain, send);
 
 
 const auth = {
@@ -72,6 +78,7 @@ app
   .whenReady()
   .then(() => {
     createWindow();
+
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.

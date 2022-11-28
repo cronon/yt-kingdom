@@ -1,39 +1,38 @@
-what happen if remove permissions for the app in youtube
-set scrollbars for long playlists
-
 remove .mp3 part from the playlist
 
-where to store client id when deistributing app
-
-show user avatar from Youtube. items.snippet.thumbnails has an array of links
-
+jumping japanese charachters in .y-progressbar {
 A warning during concat
 [mp4 @ 0000020759ba8f20] Non-monotonous DTS in output stream 0:1; previous: 45238338, current: 33638144; changing to 45238339. This may result in incorrect timestamps in the output file.
 
+
 use a class for Time - doesn't hurt anything right now, but Martin Fowler insists on it
 how to get logs in prod?
-publish on github to test it on win 8 and not run with an usb stick
 exclude unneded ffmpeg binaries from build (don't have mac binaries for win build)
-test with special characters
 clean temp folder?
 
-picture width should be divisible by 2?
-show size of image
+show size of image 1h
+  picture width should be divisible by 2?
   spent some time on it x2
 select several picutres in the dialong, then choose between them with arrows
 
-check out npm audit
+check out npm audit 2h
+deal with the warning on startup 15m
 
-
-
-
-deal with the warning on startup
-
-https://www.electronjs.org/docs/latest/tutorial/security
+https://www.electronjs.org/docs/latest/tutorial/security 1h
   remove unsafe-inline
+
+what happen if remove permissions for the app in youtube
+where to store client id when deistributing app
+
+show user avatar from Youtube. items.snippet.thumbnails has an array of links
 
 done
 filefilter: mp3, jpg, png - done with it quickly when it became annoying
 TODO check shell escape
   both for security and for accepting filenames with brackets
   handled by node spawn accepting arguments as an array. It was also needed to escape characters in legit song names
+
+publish on github to test it on win 8 and not run with an usb stick
+test with special characters
+set scrollbars for long playlists
+
