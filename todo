@@ -1,12 +1,8 @@
-remove .mp3 part from the playlist
 
 jumping japanese charachters in .y-progressbar {
 
-
-
-use a class for Time - doesn't hurt anything right now, but Martin Fowler insists on it
 how to get logs in prod?
-exclude unneded ffmpeg binaries from build (don't have mac binaries for win build)
+
 clean temp folder?
 
 show size of image 1h
@@ -27,7 +23,11 @@ where to store client id when deistributing app
 
 show user avatar from Youtube. items.snippet.thumbnails has an array of links
 
+use a class for Time - doesn't hurt anything right now, but Martin Fowler insists on it
+
 done
+remove .mp3 part from the playlist
+
 filefilter: mp3, jpg, png - done with it quickly when it became annoying
 TODO check shell escape
   both for security and for accepting filenames with brackets
@@ -39,3 +39,5 @@ set scrollbars for long playlists
 
 A warning during concat
 [mp4 @ 0000020759ba8f20] Non-monotonous DTS in output stream 0:1; previous: 45238338, current: 33638144; changing to 45238339. This may result in incorrect timestamps in the output file.
+
+exclude unneded ffmpeg binaries from build (don't have mac binaries for win build)

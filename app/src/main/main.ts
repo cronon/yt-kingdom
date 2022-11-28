@@ -25,6 +25,8 @@ import {logger} from './logger';
 import { isDebug } from './config';
 
 
+process.on('unhandledRejection', (e: any) => logger.error(e.toString()))
+
 class AppUpdater {
   constructor() {
     log.transports.file.level = 'info';

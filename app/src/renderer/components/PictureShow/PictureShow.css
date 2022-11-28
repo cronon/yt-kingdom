@@ -1,6 +1,7 @@
 .y-pictureShow {
   display: flex;
   justify-content: center;
+  position: relative;
 }
 .y-pictureShow img {
   /* 16:9 ration - the same as in youtube */
@@ -8,4 +9,12 @@
   height: 225px;
   object-fit: contain;
   background: black;
+}
+.y-pictureShow-dimensions {
+  bottom: 0;
+  right: .5rem;
+  position: absolute;
+  background: rgb(213 104 104 / 50%);
+  cursor: help;
+  user-select: none;
 }

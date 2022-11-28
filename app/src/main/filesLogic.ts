@@ -7,6 +7,7 @@ import {spawn} from 'child_process';
 import {logger} from './logger';
 import { appFolder } from "./config";
 import { OnProgress } from "common";
+import sizeOf from 'image-size'
 
 var pathToFfmpeg =  require('ffmpeg-static-electron').path.replace('app.asar', 'app.asar.unpacked');
 console.log(' PROCESS EXEC', process.execPath)
@@ -72,7 +73,6 @@ async function concatVideos(mp4Paths: string[], onProgress: OnProgress): Promise
     stderr => {
       // ffmpeg stderr: frame=  738 fps=0.0 q=28.0 Lsize=     778kB time=00:00:27.24 bitrate= 234.1kbits/s speed=48.6x
       const timeMatch = stderr.match(/time=(\d\d:\d\d:\d\d)/);
-      console.log(stderr)
       if (timeMatch && timeMatch[1]) {
         onProgress('Concatenating video ' + timeMatch[1] )
       }
@@ -83,7 +83,6 @@ async function concatVideos(mp4Paths: string[], onProgress: OnProgress): Promise
 
 const defaultPicture = path.join(appFolder, 'assets/emptyCover.jpg');
 async function convertSong(songPath: string, picturePath: string = defaultPicture, onProgress: OnProgress): Promise<string> {
-  console.log('picturePath', picturePath)
   const songName = path.basename(songPath);
   const mp4Path = tempFolder.tempPath(songName+'.mp4')
   await ffmpegCommand([
@@ -100,7 +99,6 @@ async function convertSong(songPath: string, picturePath: string = defaultPictur
     (stderr) => {
       // ffmpeg stderr: frame=  738 fps=0.0 q=28.0 Lsize=     778kB time=00:00:27.24 bitrate= 234.1kbits/s speed=48.6x
       const timeMatch = stderr.match(/time=(\d\d:\d\d:\d\d)/);
-      console.log(stderr)
       if (timeMatch && timeMatch[1]) {
         onProgress('Converting ' + timeMatch[1] + ' ' + songName + '')
       }
@@ -163,6 +161,14 @@ async function fileOpenDialog(onProgress: (fileName: string) => void): Promise<A
       const title = path.parse(filepath).name
       parsedFiles.push({id: getId(), path: filepath, duration, title})
     } else {
+      logger.info('Reading image', filepath);
+      const {width, height} = sizeOf(filepath);
+      if (!width || !height) {
+        throw new Error (`Can't read image ${filepath}`)
+      }
+      if (width % 2 !== 0) {
+        throw new Error(`Image width should be divisible by 2 ${filepath}`)
+      }
       const base64 =  fs.readFileSync(filepath).toString('base64');
       parsedFiles.push({path: filepath, base64, ext});
     }
@@ -171,6 +177,7 @@ async function fileOpenDialog(onProgress: (fileName: string) => void): Promise<A
 }
 
 async function readMp3(filepath: string): Promise<string> {
+  logger.info('Reading an mp3', filepath);
   const {allstderr: stderr} = await ffmpegCommand([
     // '-v', 'quiet',
     '-stats',

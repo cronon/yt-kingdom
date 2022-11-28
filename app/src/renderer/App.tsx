@@ -1,12 +1,10 @@
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-import icon from '../../assets/icon.svg';
 import './App.css';
 import {useState, useEffect, useRef} from 'react';
 import { Song } from 'common/song';
-import { timecodes } from './components/Timecodes/timecodes';
-import { Picture } from 'common/picture';
+
 import { PictureShow } from './components/PictureShow/PictureShow';
-import { useFiles } from './useFiles';
+import { Status, useFiles } from './useFiles';
 import { useLogin } from './useLogin';
 
 const showMockData = false;
@@ -101,7 +99,7 @@ follow on https://soundcloud.com/
             </div>}
         </div>
       </div>
-      <Statusbar status={status} />
+      <Statusbar status={status.status} text={status.text} />
     </div>
   );
 };
@@ -145,10 +143,11 @@ const zIndexes = {
   globalOverlay: 1
 }
 
-function Statusbar({status}: {status: string}) {
+function Statusbar({text, status}: {status: Status, text: string}) {
   const {logs} = useLogs()
   const [logsOpen, setLogsOpen] = useState(false);
-  const statusClass = "y-statusbar " + (logsOpen ? 'y-statusbar-open' : '');
+  const statusClass = "y-statusbar " + (logsOpen ? 'y-statusbar-open' : '') + ' y-statusbar-'+status;
+  const progressbarClass = 'y-progressbar ' + 'y-progressbar-'+status
   const logsRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (logsRef.current) {
@@ -156,8 +155,8 @@ function Statusbar({status}: {status: string}) {
     }
   }, [logsOpen])
   return <div className={statusClass} style={{zIndex: zIndexes.statusbar}}>
-    <div className="y-progressbar">
-      <span className="y-status-text" title={status}>{status}</span>
+    <div className={progressbarClass}>
+      <span className="y-status-text" title={text}>{text}</span>
       {!logsOpen && <button onClick={e => setLogsOpen(true)}>&#65085; Show logs</button>}
       {logsOpen && <button onClick={e => setLogsOpen(false)}>︾ Hide logs</button>}
     </div>

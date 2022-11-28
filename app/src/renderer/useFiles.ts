@@ -6,6 +6,7 @@ import { timecodes } from "./components/Timecodes/timecodes";
 const zip = <A, B>(a: A[], b:B[]) =>  a.map(function(e, i) {
   return [e, b[i]] as ([A, B])
 });
+export type Status = 'done' | 'inprogress' | 'error';
 
 interface UseFiles {
   songs: Song[];
@@ -27,7 +28,10 @@ interface UseFiles {
   uploadAlbum: boolean;
   setUploadAlbum: (newUploadAlbum: boolean) => void;
 
-  status: string;
+  status: {
+    status: Status;
+    text: string;
+  };
 }
 
 let _id = 0;
@@ -70,12 +74,12 @@ https://soundcloud.com/kiarabirth`,
       isLoading: false,
       songs: [],
       picture: {ext: 'png', base64: '', path: './assets/emptyCover.jpg'},
-      songTemplate: '',
-      albumName: `Artist - %track%
-Ablum (2022)
+      songTemplate: `Artist - %track%
+  Ablum (2022)
 
-#music #electronic
-follow on https://soundcloud.com/`,
+  #music #electronic
+  follow on https://soundcloud.com/`,
+      albumName: 'Artist - Album (2022)',
       albumTemplate: `Artist - Album (2022)
 
 %playlist%
@@ -105,35 +109,42 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
 
   const [uploadAlbum, setUploadAlbum] = useState(true);
 
-  const [status, setStatus] = useState('Idle');
+  const [status, _setStatus] = useState({text: 'Idle', status: 'done' as Status});
+  const setStatus = (text: string, status: Status) => _setStatus({text, status});
 
   const addFilesDialog = async () => {
     if (isLoading) return;
     setIsLoading(true);
-    setStatus('Open file');
-    const newFiles = await window.electronApi.openFileDialog(
-      (processingFile: string) => setStatus('Reading ' + processingFile)
-    );
-    setIsLoading(false);
-    setStatus('Idle');
+    setStatus('Open file', 'inprogress');
+    try {
+      const newFiles = await window.electronApi.openFileDialog(
+        (processingFile: string) => setStatus('Reading ' + processingFile, 'inprogress')
+      );
 
-    const songs = newFiles
-      .filter((f: any) => !!f.duration)
-      .map(s => ({...s, id: getId()})) as Song[];
-    setSongs(prevState => prevState.concat(songs));
+      const songs = newFiles
+        .filter((f: any) => !!f.duration)
+        .map(s => ({...s, id: getId()})) as Song[];
+      setSongs(prevState => prevState.concat(songs));
 
-    const picture = newFiles.filter((f: any) => f.base64)[0] as Picture;
-    if (picture) setPicture(picture);
+      const picture = newFiles.filter((f: any) => f.base64)[0] as Picture;
+      if (picture) setPicture(picture);
+
+      setStatus('Idle', 'done');
+    } catch (e: any) {
+      setStatus(e.toString(), 'error')
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   async function startConvert() {
     setIsLoading(true);
     try {
       for (const song of songs) {
-        await window.electronApi.convertSong({song, picture}, status => setStatus(status));
+        await window.electronApi.convertSong({song, picture}, status => setStatus(status, 'inprogress'));
       }
     } finally {
-      setStatus('Idle')
+      setStatus('Idle', 'done')
       setIsLoading(false);
     }
   }
@@ -143,16 +154,16 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
     try {
       const songsWithMp4: [string, Song][] = []
       for (const song of songs) {
-        setStatus('Converting song '+song.title);
-        const mp4Path = await window.electronApi.convertSong({song, picture}, status => setStatus(status))
+        setStatus('Converting song '+song.title, 'inprogress');
+        const mp4Path = await window.electronApi.convertSong({song, picture}, status => setStatus(status, 'inprogress'))
         songsWithMp4.push([mp4Path, song]);
       }
 
       let albumMp4 = '';
       if (uploadAlbum) {
-        setStatus('Concatenating album video');
+        setStatus('Concatenating album video', 'inprogress');
         const mp4Paths = songsWithMp4.map(sm => sm[0]);
-        albumMp4 = await window.electronApi.concatVideos({mp4Paths}, status => setStatus(status));
+        albumMp4 = await window.electronApi.concatVideos({mp4Paths}, status => setStatus(status, 'inprogress'));
       }
 
 
@@ -200,7 +211,7 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
       console.log('albumLink', albumLink)
       console.log('playlistLink', playlistLink)
     } finally {
-      setStatus('Idle')
+      setStatus('Idle', 'done')
       setIsLoading(false);
     }
 
@@ -210,6 +221,6 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
     songTemplate, setSongTemplate, songPreview,
     albumTemplate, setAlbumTemplate, albumPreview,
     albumName, setAlbumName, uploadAlbum, setUploadAlbum,
-    status
+    status: status
   }
 }
