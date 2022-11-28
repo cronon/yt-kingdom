@@ -42,7 +42,6 @@ async function retrieveTokens(): Promise<{refresh_token: string | null, access_t
 
 export async function createAuth(): Promise<{client: OAuth2Client, isLoggedIn: boolean}> {
   const keys = getKeys();
-  console.log('GOT KEYS', keys);
   const client = new OAuth2Client({
     clientId: keys.client_id,
     clientSecret: keys.client_secret,

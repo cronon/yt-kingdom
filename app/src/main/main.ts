@@ -121,13 +121,11 @@ async function createWindow() {
     if (!mainWindow) {
       throw new Error('"mainWindow" is not defined');
     }
-    if (process.env.START_MINIMIZED) {
-      mainWindow.minimize();
-    } else {
-        mainWindow.show()
-        mainWindow.maximize()
-        mainWindow.webContents.openDevTools();
-    }
+
+    mainWindow.show()
+    mainWindow.maximize()
+    mainWindow.webContents.openDevTools();
+
   });
 
   mainWindow.on('closed', () => {
