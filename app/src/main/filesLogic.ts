@@ -52,19 +52,24 @@ export function filesLogic(ipcMain: Electron.IpcMain, send: (channel: string, ..
 async function concatVideos(mp4Paths: string[]): Promise<string> {
   logger.info('concat videos', ...mp4Paths)
   const listFilePath = tempFolder.tempPath('list.txt');
-  // file '/mnt/share/file 3'\''.wav'
-  const listFileContents = mp4Paths.map(p => `file '${p.replace(/\'/g, `\\'`)}'`).join('\n')
-  const listFile = fs.writeFileSync(listFilePath, listFileContents)
+  // // file '/mnt/share/file 3'\''.wav'
+  // const listFileContents = mp4Paths.map(p => `file '${p.replace(/\'/g, `\\'`)}'`).join('\n')
+  // const listFile = fs.writeFileSync(listFilePath, listFileContents)
 
   const totalFilePath = tempFolder.tempPath('total.mp4')
-  // ffmpeg -f concat -safe 0 -i mylist.txt -c copy output.mp4
+  //  ffmpeg.exe -i '1.mp4' -i '2.mp4' -filter_complex "[0:v] [0:a] [1:v] [1:a] concat=n=2:v=1:a=1 [v] [a]" \
+  // -map "[v]" -map "[a]" total.mp4
+  const inputs = mp4Paths.map(path => ['-i', path]).flat();
+  const filters = mp4Paths.map((path, i) => `[${i}:v] [${i}:a]`).join(' ');
+  const filter_complex = `${filters} concat=n=${mp4Paths.length}:v=1:a=1 [v] [a]`
+
   await ffmpegCommand([
-    '-f', 'concat',
-    '-safe', '0',
-    '-i', listFilePath,
-    '-c', 'copy',
-    totalFilePath,
-    '-y'
+    ...inputs,
+    '-filter_complex', filter_complex,
+    '-map', '[v]',
+    '-map', '[a]',
+    '-y',
+    totalFilePath
   ],
   )
   return totalFilePath;
@@ -87,7 +92,6 @@ async function convertSong(songPath: string, picturePath: string = defaultPictur
   ],
     (data) => {},
     (stderr) => {
-
       // ffmpeg stderr: frame=  738 fps=0.0 q=28.0 Lsize=     778kB time=00:00:27.24 bitrate= 234.1kbits/s speed=48.6x
       const timeMatch = stderr.match(/time=(\d\d:\d\d:\d\d)/);
       console.log(stderr)

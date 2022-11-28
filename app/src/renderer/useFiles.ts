@@ -136,7 +136,7 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
       const songsWithMp4: [string, Song][] = []
       for (const song of songs) {
         setStatus('Converting song '+song.title);
-        const mp4Path = await window.electronApi.convertSong({song, picture}, () => {})
+        const mp4Path = await window.electronApi.convertSong({song, picture}, status => setStatus(status))
         songsWithMp4.push([mp4Path, song]);
       }
 

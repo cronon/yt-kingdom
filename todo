@@ -1,8 +1,7 @@
 remove .mp3 part from the playlist
 
 jumping japanese charachters in .y-progressbar {
-A warning during concat
-[mp4 @ 0000020759ba8f20] Non-monotonous DTS in output stream 0:1; previous: 45238338, current: 33638144; changing to 45238339. This may result in incorrect timestamps in the output file.
+
 
 
 use a class for Time - doesn't hurt anything right now, but Martin Fowler insists on it
@@ -14,6 +13,8 @@ show size of image 1h
   picture width should be divisible by 2?
   spent some time on it x2
 select several picutres in the dialong, then choose between them with arrows
+
+test sound quality
 
 check out npm audit 2h
 deal with the warning on startup 15m
@@ -36,3 +37,5 @@ publish on github to test it on win 8 and not run with an usb stick
 test with special characters
 set scrollbars for long playlists
 
+A warning during concat
+[mp4 @ 0000020759ba8f20] Non-monotonous DTS in output stream 0:1; previous: 45238338, current: 33638144; changing to 45238339. This may result in incorrect timestamps in the output file.
