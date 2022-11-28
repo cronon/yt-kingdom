@@ -1,13 +1,13 @@
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import {useState, useEffect, useRef} from 'react';
-import { Song } from 'common/song';
 
 import { PictureShow } from './components/PictureShow/PictureShow';
 import { Status, useFiles } from './useFiles';
 import { useLogin } from './useLogin';
+import { Songlist } from './components/Songlist/Songlist';
 
-const showMockData = false;
+const showMockData = true;
 function getDefaultData(showMockData: boolean) {
   if (showMockData) {
     return {
@@ -36,7 +36,7 @@ function useLogs() {
 const Main = () => {
   const defaultData = getDefaultData(showMockData);
   const [isLoading, setIsLoading] = useState(defaultData.isLoading);
-  const {songs, addFilesDialog, picture, startConvert, convertAndUpload,
+  const {songs, setSongs, addFilesDialog, picture, startConvert, convertAndUpload,
     songTemplate, setSongTemplate, songPreview,
     albumTemplate, setAlbumTemplate, albumPreview,
     albumName, setAlbumName,
@@ -64,7 +64,7 @@ follow on https://soundcloud.com/
       <div className="y-stage">
         <div className="y-playlist">
           <PictureShow picture={picture} />
-          <Songlist songs={songs} />
+          <Songlist songs={songs} setSongs={setSongs}/>
           <div>
             <button disabled={isLoading} onClick={addFilesDialog}>Open</button>
             <button disabled={isLoading} onClick={startConvert}>Convert</button>
@@ -118,25 +118,7 @@ function LoginBar(props: {showMockData: boolean, isLoading: boolean, setIsLoadin
   </div>
 }
 
-function Songlist({songs}: {songs: Song[]}) {
-  return <div className="y-songlist">
-      <table>
-      <tbody >
-          {songs.map((s, i) => <tr key={s.id}>
-                <td>{i+1}.</td>
-                <td>{s.title}</td>
-                <td>{noZeroHH(s.duration)}</td>
-            </tr>
-          )}
-      </tbody>
-    </table>
-  </div>
-}
-function noZeroHH(timestamp: string) {
-  if (timestamp.length === 5) return timestamp
-  else if (timestamp.length === 8 && timestamp[0] === '0' && timestamp[1] === '0') return timestamp.slice(3)
-  else throw new Error(`Cannot remove leading zeros from a time ${timestamp}`);
-}
+
 
 const zIndexes = {
   statusbar: 2,

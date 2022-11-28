@@ -1,14 +1,9 @@
+better icon for remove song
+where to store client id when distributing app
 
-jumping japanese charachters in .y-progressbar {
-
-how to get logs in prod?
+how to get logs in prod? electron.log?
 
 clean temp folder?
-
-show size of image 1h
-  picture width should be divisible by 2?
-  spent some time on it x2
-select several picutres in the dialong, then choose between them with arrows
 
 test sound quality
 
@@ -19,11 +14,15 @@ https://www.electronjs.org/docs/latest/tutorial/security 1h
   remove unsafe-inline
 
 what happen if remove permissions for the app in youtube
-where to store client id when deistributing app
+
 
 show user avatar from Youtube. items.snippet.thumbnails has an array of links
+jumping japanese charachters in .y-progressbar {
+
+select several picutres in the dialong, then choose between them with arrows
 
 use a class for Time - doesn't hurt anything right now, but Martin Fowler insists on it
+does it make sense not to use setSongs in UI code
 
 done
 remove .mp3 part from the playlist
@@ -41,3 +40,7 @@ A warning during concat
 [mp4 @ 0000020759ba8f20] Non-monotonous DTS in output stream 0:1; previous: 45238338, current: 33638144; changing to 45238339. This may result in incorrect timestamps in the output file.
 
 exclude unneded ffmpeg binaries from build (don't have mac binaries for win build)
+
+show size of image 1h
+  picture width should be divisible by 2?
+  spent some time on it x2

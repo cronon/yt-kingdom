@@ -10,6 +10,7 @@ export type Status = 'done' | 'inprogress' | 'error';
 
 interface UseFiles {
   songs: Song[];
+  setSongs: (songs: Song[]) => void;
   addFilesDialog: () => void;
   picture: Picture;
   startConvert: () => void;
@@ -217,7 +218,7 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
 
   }
 
-  return {songs, addFilesDialog, picture, startConvert, convertAndUpload,
+  return {songs, setSongs, addFilesDialog, picture, startConvert, convertAndUpload,
     songTemplate, setSongTemplate, songPreview,
     albumTemplate, setAlbumTemplate, albumPreview,
     albumName, setAlbumName, uploadAlbum, setUploadAlbum,

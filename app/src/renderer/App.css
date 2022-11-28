@@ -79,13 +79,7 @@ button:hover {
   flex-direction: column;
   padding-left: .5rem;
 }
-.y-songlist {
-  margin: 1rem 0;
-  overflow: auto;
-}
-.y-songlist td {
-  vertical-align: baseline;
-}
+
 .y-settings {
   width: 50%;
   overflow: auto;
