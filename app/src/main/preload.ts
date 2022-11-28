@@ -15,6 +15,7 @@ const electronApi = {
       return res;
     })
   },
+
   async convertSong(params: {song: Song, picture: Picture},  onProgress: OnProgress): Promise<string> {
     const cb = (_, file: string) => onProgress(file);
     ipcRenderer.on('convertSongProgress', cb)
@@ -23,8 +24,14 @@ const electronApi = {
       return res;
     })
   },
-  async concatVideos(params: {mp4Paths: string[]}): Promise<string> {
-    return ipcRenderer.invoke('concatVideos', params)
+
+  async concatVideos(params: {mp4Paths: string[]}, onProgress: OnProgress): Promise<string> {
+    const cb = (_, file: string) => onProgress(file);
+    ipcRenderer.on('concatVideosProgress', cb)
+    return ipcRenderer.invoke('concatVideos', params).then(res => {
+      ipcRenderer.off('concatVideosProgress', cb);
+      return res;
+    })
   },
   async onLoginChange(callback: (auth: Auth) => void) {
     ipcRenderer.on('onLoginChange', (event, auth: Auth) => {

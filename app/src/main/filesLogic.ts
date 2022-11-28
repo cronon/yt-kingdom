@@ -46,15 +46,12 @@ export function filesLogic(ipcMain: Electron.IpcMain, send: (channel: string, ..
   });
 
   ipcMain.handle('concatVideos', async (event, args: {mp4Paths: string[]}) => {
-    return concatVideos(args.mp4Paths);
+    const onProgress = (status: string) => send('concatVideosProgress', status);
+    return concatVideos(args.mp4Paths, onProgress);
   })
 }
-async function concatVideos(mp4Paths: string[]): Promise<string> {
+async function concatVideos(mp4Paths: string[], onProgress: OnProgress): Promise<string> {
   logger.info('concat videos', ...mp4Paths)
-  const listFilePath = tempFolder.tempPath('list.txt');
-  // // file '/mnt/share/file 3'\''.wav'
-  // const listFileContents = mp4Paths.map(p => `file '${p.replace(/\'/g, `\\'`)}'`).join('\n')
-  // const listFile = fs.writeFileSync(listFilePath, listFileContents)
 
   const totalFilePath = tempFolder.tempPath('total.mp4')
   //  ffmpeg.exe -i '1.mp4' -i '2.mp4' -filter_complex "[0:v] [0:a] [1:v] [1:a] concat=n=2:v=1:a=1 [v] [a]" \
@@ -71,6 +68,15 @@ async function concatVideos(mp4Paths: string[]): Promise<string> {
     '-y',
     totalFilePath
   ],
+    stdout => {},
+    stderr => {
+      // ffmpeg stderr: frame=  738 fps=0.0 q=28.0 Lsize=     778kB time=00:00:27.24 bitrate= 234.1kbits/s speed=48.6x
+      const timeMatch = stderr.match(/time=(\d\d:\d\d:\d\d)/);
+      console.log(stderr)
+      if (timeMatch && timeMatch[1]) {
+        onProgress('Concatenating video ' + timeMatch[1] )
+      }
+    }
   )
   return totalFilePath;
 }
@@ -154,7 +160,8 @@ async function fileOpenDialog(onProgress: (fileName: string) => void): Promise<A
     const ext = path.extname(filepath);
     if (ext === '.mp3') {
       const duration = await readMp3(filepath);
-      parsedFiles.push({id: getId(), path: filepath, duration, title: path.basename(filepath)})
+      const title = path.parse(filepath).name
+      parsedFiles.push({id: getId(), path: filepath, duration, title})
     } else {
       const base64 =  fs.readFileSync(filepath).toString('base64');
       parsedFiles.push({path: filepath, base64, ext});

@@ -71,8 +71,16 @@ https://soundcloud.com/kiarabirth`,
       songs: [],
       picture: {ext: 'png', base64: '', path: './assets/emptyCover.jpg'},
       songTemplate: '',
-      albumName: '',
-      albumTemplate: '',
+      albumName: `Artist - %track%
+Ablum (2022)
+
+#music #electronic
+follow on https://soundcloud.com/`,
+      albumTemplate: `Artist - Album (2022)
+
+%playlist%
+#music #electronic
+follow on https://soundcloud.com/`,
     }
   }
 }
@@ -144,7 +152,7 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
       if (uploadAlbum) {
         setStatus('Concatenating album video');
         const mp4Paths = songsWithMp4.map(sm => sm[0]);
-        albumMp4 = await window.electronApi.concatVideos({mp4Paths});
+        albumMp4 = await window.electronApi.concatVideos({mp4Paths}, status => setStatus(status));
       }
 
 

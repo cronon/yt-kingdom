@@ -125,7 +125,7 @@ function Songlist({songs}: {songs: Song[]}) {
       <table>
       <tbody >
           {songs.map((s, i) => <tr key={s.id}>
-                <td>{i+1}</td>
+                <td>{i+1}.</td>
                 <td>{s.title}</td>
                 <td>{noZeroHH(s.duration)}</td>
             </tr>

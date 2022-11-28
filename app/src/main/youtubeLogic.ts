@@ -4,7 +4,7 @@ import { google, youtube_v3 } from 'googleapis';
 import { authenticate, createAuth } from './googleAuth';
 
 
-export function youtubeLogic(ipcMain: Electron.IpcMain) {
+export function youtubeLogic(ipcMain: Electron.IpcMain, send: (channel: string, ...args: any[]) => void) {
   ipcMain.handle('youtubeLogin', youtubeLogin);
   ipcMain.handle('youtubeUpload', (event, args) => youtubeUpload(args));
   ipcMain.handle('youtubeCreatePlaylist', (event, args) => youtubeCreatePlaylist(args));
