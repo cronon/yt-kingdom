@@ -8,6 +8,7 @@ const destroyer = require('server-destroy');
 import {AddressInfo} from 'net';
 import { app } from 'electron';
 import path from 'path';
+import { getKeys } from './config';
 
 const invalidRedirectUri = `The provided keyfile does not define a valid
 redirect URI. There must be at least one redirect URI defined, and this sample
@@ -37,12 +38,7 @@ async function retrieveTokens(): Promise<{refresh_token: string | null, access_t
   return {refresh_token, access_token};
 }
 
-function getKeys() {
-  const secretsPath = path.join(app.getAppPath(), '../.secrets/oauth2.keys.json');
-  const keyFile = require(secretsPath);
-  const keys = keyFile.installed || keyFile.web;
-  return keys;
-}
+
 
 export async function createAuth(): Promise<{client: OAuth2Client, isLoggedIn: boolean}> {
   const keys = getKeys();

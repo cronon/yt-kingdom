@@ -1,21 +1,39 @@
 {
-  "name": "electron-react-boilerplate",
-  "version": "4.6.0",
-  "description": "A foundation for scalable desktop apps",
+  "name": "yt-kingdom",
+  "version": "0.1.1",
+  "description": "Add cover picture to songs and upload them on Youtube",
+  "keywords": [
+    "electron",
+    "youtube",
+    "mp3-to-mp4",
+    "mp3",
+    "mp4",
+    "cover"
+  ],
+  "homepage": "https://github.com/cronon/yt-kingdom",
+  "bugs": {
+    "url": "https://github.com/cronon/yt-kingdom/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cronon/yt-kingdom.git"
+  },
   "license": "MIT",
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://github.com/electron-react-boilerplate"
+    "name": "cronon",
+    "email": "cronon12@gmail.com"
   },
   "main": "./dist/main/main.js",
   "scripts": {
     "rebuild": "node -r ts-node/register ../../.erb/scripts/electron-rebuild.js",
-    "postinstall": "npm run rebuild && npm run link-modules",
+    "postinstall": "npm run rebuild && npm run link-modules && rimraf node_modules/ffmpeg-static-electron/bin/linux node_modules/ffmpeg-static-electron/bin/mac ",
     "link-modules": "node -r ts-node/register ../../.erb/scripts/link-modules.ts"
   },
   "dependencies": {
     "ffmpeg-static-electron": "^2.0.3",
     "keytar": "^7.9.0"
+  },
+  "devDependencies": {
+    "rimraf": "latest"
   }
 }
