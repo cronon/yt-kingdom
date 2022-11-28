@@ -9,7 +9,7 @@ import { PictureShow } from './components/PictureShow/PictureShow';
 import { useFiles } from './useFiles';
 import { useLogin } from './useLogin';
 
-const showMockData = true;
+const showMockData = false;
 function getDefaultData(showMockData: boolean) {
   if (showMockData) {
     return {
@@ -45,7 +45,20 @@ const Main = () => {
     uploadAlbum, setUploadAlbum,
     status
   } = useFiles({isLoading, setIsLoading, showMockData});
-  console.log('Upaded status', status)
+
+  const songTemplatePlaceholder = `Artist - %track%
+Ablum (2022)
+
+#music #electronic
+follow on https://soundcloud.com/
+%track% keyword will be replaced with the track title.`;
+  const albumTemplatePlaceholder = `Artist - Album (2022)
+
+%playlist%
+#music #electronic
+follow on https://soundcloud.com/
+
+%playlist% keyword will be replaced with the timecodes for the album video.`
   return (
     <div className="y-main">
       <GlobalOverlay isLoading={isLoading} />
@@ -65,7 +78,7 @@ const Main = () => {
               <div>
                 <label>
                   <div>Song description template</div>
-                  <textarea value={songTemplate} rows={5} placeholder="Use %track% to place song title" onChange={e => setSongTemplate(e.target.value)} />
+                  <textarea value={songTemplate} rows={6} placeholder={songTemplatePlaceholder} onChange={e => setSongTemplate(e.target.value)} />
                 </label>
               </div>
               <div>Preview:</div>
@@ -76,12 +89,12 @@ const Main = () => {
             {uploadAlbum &&
             <div className="y-album-settings">
                 <label className="y-album-name">
-                    Album video and playlist name
-                    <input type="text" value={albumName} onChange={e => setAlbumName(e.target.value)}/>
+                    Name of the playlist and the album video
+                    <input type="text" placeholder={'Artist - Album (2022)'} value={albumName} onChange={e => setAlbumName(e.target.value)}/>
                 </label>
                 <label>
                   <div>Album video description</div>
-                  <textarea value={albumTemplate} rows={5} placeholder="Use %playlist% to place song title" onChange={e => setAlbumTemplate(e.target.value)} />
+                  <textarea value={albumTemplate} rows={8} placeholder={albumTemplatePlaceholder} onChange={e => setAlbumTemplate(e.target.value)} />
                 </label>
               <div>Preview:</div>
               <div className="y-album-preview">{albumPreview}</div>
