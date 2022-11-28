@@ -125,8 +125,8 @@ async function createWindow() {
       mainWindow.minimize();
     } else {
         mainWindow.show()
-        // mainWindow.maximize()
-        // mainWindow.webContents.openDevTools();
+        mainWindow.maximize()
+        mainWindow.webContents.openDevTools();
     }
   });
 

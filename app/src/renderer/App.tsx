@@ -108,16 +108,18 @@ function LoginBar(props: {showMockData: boolean, isLoading: boolean, setIsLoadin
 }
 
 function Songlist({songs}: {songs: Song[]}) {
-  return <table className="y-songlist">
-    <tbody >
-        {songs.map((s, i) => <tr key={s.id}>
-              <td>{i+1}</td>
-              <td>{s.title}</td>
-              <td>{noZeroHH(s.duration)}</td>
-          </tr>
-        )}
-    </tbody>
-  </table>
+  return <div className="y-songlist">
+      <table>
+      <tbody >
+          {songs.map((s, i) => <tr key={s.id}>
+                <td>{i+1}</td>
+                <td>{s.title}</td>
+                <td>{noZeroHH(s.duration)}</td>
+            </tr>
+          )}
+      </tbody>
+    </table>
+  </div>
 }
 function noZeroHH(timestamp: string) {
   if (timestamp.length === 5) return timestamp
