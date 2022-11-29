@@ -142,6 +142,7 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
     setIsLoading(true);
     try {
       for (const song of songs) {
+        setStatus('Converting song '+song.title, 'inprogress');
         await window.electronApi.convertSong({song, picture}, status => setStatus(status, 'inprogress'));
       }
     } finally {
