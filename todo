@@ -5,6 +5,7 @@ checkbox to create youtube playlist
 checkbox to upload separate songs
 
 how to get logs in prod? electron.log?
+pass isDebug on UI
 
 clean temp folder?
 

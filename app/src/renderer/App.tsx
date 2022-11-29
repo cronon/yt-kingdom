@@ -58,7 +58,10 @@ follow on https://soundcloud.com/
 #music #electronic
 follow on https://soundcloud.com/
 
-%playlist% keyword will be replaced with the timecodes for the album video.`
+%playlist% keyword will be replaced with the timecodes for the album video.`;
+
+  const [uploadSongs, setUploadSongs] = useState(true);
+  const [createPlaylist, setCreatePlaylist] = useState(true);
   return (
     <div className="y-main">
       <GlobalOverlay isLoading={isLoading} />
@@ -70,12 +73,13 @@ follow on https://soundcloud.com/
           <div>
             <button disabled={isLoading} onClick={addFilesDialog}>Open</button>
             <button disabled={isLoading} onClick={startConvert}>Convert</button>
-            <button disabled={isLoading} onClick={convertAndUpload}>Convert and Upload</button>
+            <button disabled={isLoading} onClick={() => convertAndUpload({uploadSongs, createPlaylist})}>Convert and Upload</button>
           </div>
         </div>
         <div className="y-settings">
-            <div className="y-song-settings">
-              <div>
+          <div >
+            <label>Upload separate songs: <input type="checkbox" checked={uploadSongs} onChange={e => setUploadSongs(e.target.checked)} /></label>
+            {uploadSongs && <><div className="y-song-settings">
                 <label>
                   <div>Song description template</div>
                   <textarea value={songTemplate} rows={6} placeholder={songTemplatePlaceholder} onChange={e => setSongTemplate(e.target.value)} />
@@ -83,13 +87,23 @@ follow on https://soundcloud.com/
               </div>
               <div>Preview:</div>
               <div className="y-song-preview">{songPreview}</div>
+              <div className="y-settings-divider" />
+              <div className="y-playlist-settings">
+                <label>Create a playlist for all the songs: <input type="checkbox" checked={createPlaylist} onChange={e => setCreatePlaylist(e.target.checked)} /></label>
+                {createPlaylist && <label className="y-album-name">
+                      <span>Playlist name</span>
+                      <input type="text" placeholder={'Artist - Album (2022)'} value={albumName} onChange={e => setAlbumName(e.target.value)}/>
+                  </label>}
+              </div>
+              </>}
             </div>
-            <div className="y-settings-divider"></div>
-            <label>Upload album: <input type="checkbox" checked={uploadAlbum} onChange={e => setUploadAlbum(e.target.checked)} /></label>
+            <div className="y-settings-divider" />
+
+            <label>Create and upload album video: <input type="checkbox" checked={uploadAlbum} onChange={e => setUploadAlbum(e.target.checked)} /></label>
             {uploadAlbum &&
             <div className="y-album-settings">
                 <label className="y-album-name">
-                    Name of the playlist and the album video
+                    Name of the album video
                     <input type="text" placeholder={'Artist - Album (2022)'} value={albumName} onChange={e => setAlbumName(e.target.value)}/>
                 </label>
                 <label>

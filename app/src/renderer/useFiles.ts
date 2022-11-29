@@ -14,7 +14,7 @@ interface UseFiles {
   addFilesDialog: () => void;
   picture: Picture;
   startConvert: () => void;
-  convertAndUpload: () => void;
+  convertAndUpload: (params: {uploadSongs: boolean, createPlaylist: boolean}) => void;
 
   songTemplate: string;
   setSongTemplate: (newSongTemplate: string) => void;
@@ -151,7 +151,7 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
     }
   }
 
-  async function convertAndUpload(){
+  async function convertAndUpload({uploadSongs, createPlaylist}: {uploadSongs: boolean, createPlaylist: boolean}){
     setIsLoading(true);
     try {
       const songsWithMp4: [string, Song][] = []
@@ -175,37 +175,42 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
       // ]
       // const albumMp4 = `C:\\Users\\HP-PC\\Documents\\pet\\uploader\\app\\temp\\total.mp4`
 
-      // const songIds: string[] = [];
-      // const songsWithMp4 = zip(mp4Paths, songs);
-      // for (const songWithMp4 of songsWithMp4) {
-      //   const title = songWithMp4[1].title;
-      //   const description = getSongPreview(songWithMp4[1]);
-      //   const mp4Path = songWithMp4[0];
-      //   setStatus('Uploading video ' + title)
-      //   const res = await window.electronApi.youtubeUpload({mp4Path, title, description});
-      //   songIds.push(res.id)
-      // }
-      // let albumId = '';
-      // let playlistId = '';
-      // if (uploadAlbum) {
-      //   setStatus('Uploading album video')
-      //   const albumUploadRes = await window.electronApi.youtubeUpload({
-      //     mp4Path: albumMp4,
-      //     title: albumName,
-      //     description: albumPreview
-      //   });
-      //   albumId = albumUploadRes.id;
+      const songIds: string[] = [];
+      if (uploadSongs) {
+        for (const songWithMp4 of songsWithMp4) {
+          const title = songWithMp4[1].title;
+          const description = getSongPreview(songWithMp4[1]);
+          const mp4Path = songWithMp4[0];
+          setStatus('Uploading video ' + title, 'inprogress')
+          const res = await window.electronApi.youtubeUpload({mp4Path, title, description});
+          songIds.push(res.id)
+        }
+        setStatus('Idle', 'done');
+      }
+      let albumId = '';
+      let playlistId = '';
+      if (uploadAlbum) {
+        setStatus('Uploading album video', 'inprogress')
+        const albumUploadRes = await window.electronApi.youtubeUpload({
+          mp4Path: albumMp4,
+          title: albumName,
+          description: albumPreview
+        });
+        albumId = albumUploadRes.id;
+        setStatus('Idle', 'done');
+      }
+      if (createPlaylist) {
+        setStatus('Creating playlist', 'inprogress')
+        const playlistRes = await window.electronApi.youtubeCreatePlaylist({videoIds: songIds, name: albumName})
+        playlistId = playlistRes.id;
+        setStatus('Idle', 'done');
+      }
 
-      //   setStatus('Creating playlist')
-      //   const playlistRes = await window.electronApi.youtubeCreatePlaylist({videoIds: songIds, name: albumName})
-      //   playlistId = playlistRes.id;
-      // }
 
 
-
-      const playlistId = 'PLTrC-Aycr2aVEdT9THLUs7HRN6yq0KOrp';
-      const songIds = ['MsP-LQtTrzk', '9zfExPGaBmM']
-      const albumId = 'ab5_c37mg-o';
+      // const playlistId = 'PLTrC-Aycr2aVEdT9THLUs7HRN6yq0KOrp';
+      // const songIds = ['MsP-LQtTrzk', '9zfExPGaBmM']
+      // const albumId = 'ab5_c37mg-o';
 
       const albumLink = 'https://youtu.be/'+albumId;
       const playlistLink = 'https://youtu.be/'+songIds[0]+'?list='+playlistId;

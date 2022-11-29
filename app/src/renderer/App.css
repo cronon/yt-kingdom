@@ -85,6 +85,9 @@ button:hover {
   overflow: auto;
   padding-right: .5rem;
 }
+.y-song-settings {
+  margin-top: 1rem;
+}
 .y-song-settings textarea,
 .y-album-settings textarea {
   width: 100%;
@@ -95,12 +98,15 @@ button:hover {
   margin-top: .5rem;
   white-space: pre-line;
 }
+
 .y-settings-divider {
   margin: .5rem 0;
   border: 1px solid white;
 }
 .y-album-name {
   display: flex;
+  align-items: center;
+  margin-top: 1rem;
 }
 .y-album-name input {
   flex-grow: 1;
