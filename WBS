@@ -7,10 +7,7 @@ Deliverables and work left
 generate videos
 	CRUD + sortable songs list
 		sortable list 30m
-		editable list 30m
-		delete one and all 15m
-	progress bar
-		make better meaning from ffmpeg output 1h ? understand how much time left
+		delete all 15m
 
 upload to youtube
 	upload videos
@@ -18,13 +15,6 @@ upload to youtube
 		youtube permissions for bigger quota
 			ask youtube for the bigger quota ? 2h-2d
 				waiting for insturctions
-
-exe file
-	bundled code
-		how to do updates ? 1h
-		preferably with ffmpeg included to the bundle
-	published to github
-		how to make releases in github ? 1h
 
 16h in total ~ 2d
 + 4d debugging = 6d
@@ -67,6 +57,8 @@ login to youtube button
 	where does electron store creds? It will be tedious to log in each time the app reruns 30m
 generate videos
 	CRUD + sortable songs list
+		editable list 30m
+		delete one 15m
 		files datastructure 30m
 		add files 15m
 		read files mp3 1h ? - only some idea what to do about it
@@ -77,6 +69,7 @@ generate videos
 		send command to ffmpeg 1h ? how to integrate with other programs in elector? with ffmpeg in js?
 	progress bar
 		make some meaning from ffmpeg output 1h ? at least see about which files it talks about
+		make better meaning from ffmpeg output 1h ? understand how much time left
 generate description
 	song description with template
 		textarea and preview 10m
@@ -100,6 +93,9 @@ upload to youtube
 
 exe file
 	bundled code
+  		how to do updates ? 1h
 		run build 10m
 		preferably with ffmpeg included to the bundle
 			find out how to include everything into a single exe ? 20m
+    published to github
+      how to make releases in github ? 1h

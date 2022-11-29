@@ -65,6 +65,9 @@ function TitleTd({title, onChange}: {title: string, onChange: (newTitle: string)
 
 function noZeroHH(timestamp: string) {
   if (timestamp.length === 5) return timestamp
-  else if (timestamp.length === 8 && timestamp[0] === '0' && timestamp[1] === '0') return timestamp.slice(3)
+  else if (timestamp.length === 8) {
+    if (timestamp[0] === '0' && timestamp[1] === '0') return timestamp.slice(3);
+    else return timestamp;
+  }
   else throw new Error(`Cannot remove leading zeros from a time ${timestamp}`);
 }

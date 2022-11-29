@@ -179,15 +179,15 @@ async function fileOpenDialog(onProgress: (fileName: string) => void): Promise<A
 async function readMp3(filepath: string): Promise<string> {
   logger.info('Reading an mp3', filepath);
   const {allstderr: stderr} = await ffmpegCommand([
-    // '-v', 'quiet',
+    '-v', 'quiet',
     '-stats',
     '-i', filepath,
     '-f', 'null',
     '-'
   ])
-  const time = stderr.match(/\d\d\:\d\d:\d\d/)
+  const time = stderr.match(/time=(\d\d\:\d\d:\d\d)/)
   if (time) {
-    return time[0];
+    return time[1];
   } else {
     throw new Error('Cant read time from an mp3' + filepath)
   }

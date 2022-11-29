@@ -1,6 +1,9 @@
 better icon for remove song
 where to store client id when distributing app
 
+checkbox to create youtube playlist
+checkbox to upload separate songs
+
 how to get logs in prod? electron.log?
 
 clean temp folder?
