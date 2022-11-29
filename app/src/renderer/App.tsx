@@ -6,6 +6,8 @@ import { PictureShow } from './components/PictureShow/PictureShow';
 import { Status, useFiles } from './useFiles';
 import { useLogin } from './useLogin';
 import { Songlist } from './components/Songlist/Songlist';
+import React from 'react';
+import { ErrorBoundary } from './ErrorBoundary';
 
 const showMockData = true;
 function getDefaultData(showMockData: boolean) {
@@ -136,6 +138,7 @@ function Statusbar({text, status}: {status: Status, text: string}) {
       logsRef.current.scrollTop = logsRef.current.scrollHeight;
     }
   }, [logsOpen])
+
   return <div className={statusClass} style={{zIndex: zIndexes.statusbar}}>
     <div className={progressbarClass}>
       <span className="y-status-text" title={text}>{text}</span>
@@ -161,12 +164,16 @@ function GlobalOverlay({isLoading}: {isLoading: boolean}) {
   return isLoading ? <div style={style} /> : <></>;
 }
 
+
+
 export default function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Main />} />
-      </Routes>
-    </Router>
+    <ErrorBoundary>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Main />} />
+        </Routes>
+      </Router>
+    </ErrorBoundary>
   );
 }
