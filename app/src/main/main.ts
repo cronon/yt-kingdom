@@ -13,7 +13,7 @@ process.on('uncaughtException', function (error) {
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, shell } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
@@ -148,7 +148,7 @@ async function createWindow() {
 
   // Open urls in the user's browser
   mainWindow.webContents.setWindowOpenHandler((edata) => {
-    // shell.openExternal(edata.url);
+    shell.openExternal(edata.url);
     return { action: 'deny' };
   });
 

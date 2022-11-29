@@ -14,7 +14,7 @@ interface UseFiles {
   addFilesDialog: () => void;
   picture: Picture;
   startConvert: () => void;
-  convertAndUpload: (params: {uploadSongs: boolean, createPlaylist: boolean}) => void;
+  convertAndUpload: (params: {uploadSongs: boolean, createPlaylist: boolean}) => Promise<{songIds: string[], albumId: string, playlistId: string}>;
 
   songTemplate: string;
   setSongTemplate: (newSongTemplate: string) => void;
@@ -208,8 +208,6 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
         setStatus('Idle', 'done');
       }
 
-
-
       // const playlistId = 'PLTrC-Aycr2aVEdT9THLUs7HRN6yq0KOrp';
       // const songIds = ['MsP-LQtTrzk', '9zfExPGaBmM']
       // const albumId = 'ab5_c37mg-o';
@@ -219,6 +217,9 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
 
       console.log('albumLink', albumLink)
       console.log('playlistLink', playlistLink)
+      return {
+        songIds, albumId, playlistId
+      }
     } finally {
       setStatus('Idle', 'done')
       setIsLoading(false);

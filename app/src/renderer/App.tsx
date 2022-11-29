@@ -8,6 +8,7 @@ import { useLogin } from './useLogin';
 import { Songlist } from './components/Songlist/Songlist';
 import React from 'react';
 import { ErrorBoundary } from './ErrorBoundary';
+import { shell } from 'electron';
 
 const showMockData = true;
 function getDefaultData(showMockData: boolean) {
@@ -62,9 +63,17 @@ follow on https://soundcloud.com/
 
   const [uploadSongs, setUploadSongs] = useState(true);
   const [createPlaylist, setCreatePlaylist] = useState(true);
+  const [successModalShown, setSuccessModalShow] = useState(false);
+  const [ytResponse, setYtResponse] = useState({songIds: [] as string[], albumId: '', playlistId: ''})
+  const convertAndUploadClick = async () => {
+    const response = await convertAndUpload({uploadSongs, createPlaylist});
+    setYtResponse(response);
+    setSuccessModalShow(true);
+  }
   return (
     <div className="y-main">
       <GlobalOverlay isLoading={isLoading} />
+      <SuccessModal isShown={successModalShown} onHide={() => setSuccessModalShow(false)} res={ytResponse} />
       <LoginBar isLoading={isLoading} setIsLoading={setIsLoading} showMockData={showMockData}/>
       <div className="y-stage">
         <div className="y-playlist">
@@ -73,7 +82,7 @@ follow on https://soundcloud.com/
           <div>
             <button disabled={isLoading} onClick={addFilesDialog}>Open</button>
             <button disabled={isLoading} onClick={startConvert}>Convert</button>
-            <button disabled={isLoading} onClick={() => convertAndUpload({uploadSongs, createPlaylist})}>Convert and Upload</button>
+            <button disabled={isLoading} onClick={convertAndUploadClick}>Convert and Upload</button>
           </div>
         </div>
         <div className="y-settings">
@@ -137,6 +146,7 @@ function LoginBar(props: {showMockData: boolean, isLoading: boolean, setIsLoadin
 
 
 const zIndexes = {
+  successModal: 3,
   statusbar: 2,
   globalOverlay: 1
 }
@@ -178,7 +188,33 @@ function GlobalOverlay({isLoading}: {isLoading: boolean}) {
   return isLoading ? <div style={style} /> : <></>;
 }
 
+function SuccessModal(props: {isShown: boolean, onHide: () => void, res: {songIds: string[], albumId: string, playlistId: string}}) {
+  const A = ({href}: {href: string}) => <a href={href} target="_blank">{href}</a>
+  const {albumId, playlistId, songIds} = props.res;
 
+  const playlistHref = `https://youtu.be/`+songIds[0]+'?list='+playlistId
+  if (props.isShown) {
+    return <div className="y-success-modal-overlay" style={{zIndex: zIndexes.successModal}}>
+        <div className="y-success-modal">
+          <h1>Uploaded successfully</h1>
+          {albumId && <div className="y-success-modal-album-link">Album link <A href={`https://youtu.be/`+albumId} /></div>}
+          {playlistId && <div className="y-success-modal-playlist-link">Playlist link <A href={playlistHref} /></div>}
+          {!!songIds.length && <div className="y-success-modal-songs">
+            Songs:
+            {songIds.map(sid => {
+              return <div key={sid} className="y-success-modal-song-link"><A href={'https://youtu.be/'+sid} /></div>
+            })}
+            </div>
+          }
+          <div className="y-success-modal-ok">
+            <button onClick={props.onHide}>OK</button>
+          </div>
+        </div>
+    </div>
+  } else {
+    return <></>
+  }
+}
 
 export default function App() {
   return (

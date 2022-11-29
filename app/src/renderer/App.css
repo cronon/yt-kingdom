@@ -172,3 +172,32 @@ button:hover {
   overflow: auto;
   padding: .5rem;
 }
+
+.y-success-modal-overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgb(255 225 9 / 70%);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.y-success-modal {
+  background: linear-gradient(200.96deg, #7a2c9e -29.09%, #dd5789 51.77%,  #fedc2a 129.35%);
+  padding: 2rem;
+  border-radius: 10px;
+}
+.y-success-modal a {
+  color: #fff700;
+  font-weight: bold;
+}
+.y-success-modal-ok {
+  display: flex;
+  justify-content: space-around;
+}
+.y-success-modal-songs {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
