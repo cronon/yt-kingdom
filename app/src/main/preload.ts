@@ -33,6 +33,7 @@ const electronApi = {
       return res;
     })
   },
+
   async onLoginChange(callback: (auth: Auth) => void) {
     ipcRenderer.on('onLoginChange', (event, auth: Auth) => {
       callback(auth)
@@ -41,9 +42,15 @@ const electronApi = {
   async youtubeLogin(): Promise<{username: string, loginError: string | null}> {
     return ipcRenderer.invoke('youtubeLogin')
   },
-  async youtubeUpload(params: {mp4Path: string, title: string, description: string}): Promise<{id: string, err: string | null}> {
-    return ipcRenderer.invoke('youtubeUpload', params);
+
+  async youtubeUpload(params: {mp4Path: string, title: string, description: string}, onProgress: OnProgress): Promise<{id: string, err: string | null}> {
+    const cb = (_, bytes: string) => onProgress(bytes);
+    ipcRenderer.on('youtubeUploadProgress', cb);
+    return ipcRenderer.invoke('youtubeUpload', params).finally(() => {
+      ipcRenderer.off('youtubeUploadProgress', cb);
+    });
   },
+
   async youtubeCreatePlaylist(params: {videoIds: string[], name: string}): Promise<{id: string, err: string | null}> {
     return ipcRenderer.invoke('youtubeCreatePlaylist', params);
   },

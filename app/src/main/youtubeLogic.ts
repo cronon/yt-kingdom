@@ -1,12 +1,17 @@
 
+import { OnProgress } from 'common';
 import fs from 'fs';
 import { google, youtube_v3 } from 'googleapis';
 import { authenticate, createAuth } from './googleAuth';
+import { logger } from './logger';
 
 
 export function youtubeLogic(ipcMain: Electron.IpcMain, send: (channel: string, ...args: any[]) => void) {
   ipcMain.handle('youtubeLogin', youtubeLogin);
-  ipcMain.handle('youtubeUpload', (event, args) => youtubeUpload(args));
+  ipcMain.handle('youtubeUpload', (event, args) => {
+    const onProgress = (uploadPercent: string) => send('youtubeUploadProgress', uploadPercent);
+    return youtubeUpload(args, onProgress)
+  });
   ipcMain.handle('youtubeCreatePlaylist', (event, args) => youtubeCreatePlaylist(args));
 }
 
@@ -43,7 +48,7 @@ async function youtubeLogin(): Promise<{username: string, loginError: string | n
   return {username, loginError}
 }
 
-async function youtubeUpload({mp4Path, title, description}: {mp4Path: string, title: string, description: string}): Promise<{id: string, err: string | null}> {
+async function youtubeUpload({mp4Path, title, description}: {mp4Path: string, title: string, description: string}, onProgress: OnProgress): Promise<{id: string, err: string | null}> {
   const {client, isLoggedIn} = await createAuth();
   if (!client || !isLoggedIn) {
     return {id: '', err: 'You\'re not logged in to Youtube'}
@@ -70,7 +75,12 @@ async function youtubeUpload({mp4Path, title, description}: {mp4Path: string, ti
       body: fs.createReadStream(mp4Path),
     }
   },
-  {onUploadProgress: e => console.log('UPLOADPROGERSS', e.bytesRead)}
+  {
+    onUploadProgress: e => {
+      logger.info('Uploading on youtube', e.bytesRead);
+      onProgress(Math.round(e.bytesRead / fileSize)+'%')
+    }
+  }
   );
   const id = res.data.id!;
   return {id, err: null}
