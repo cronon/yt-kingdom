@@ -10,27 +10,24 @@ const electronApi = {
   async openFileDialog(onProgress: OnProgress): Promise<Array<Picture | Song>> {
     const cb = (_, file: string) => onProgress(file)
     ipcRenderer.on('openFileDialogProgress', cb);
-    return ipcRenderer.invoke('openFileDialog').then(res => {
+    return ipcRenderer.invoke('openFileDialog').finally(() => {
       ipcRenderer.off('openFileDialogProgress', cb);
-      return res;
     })
   },
 
   async convertSong(params: {song: Song, picture: Picture},  onProgress: OnProgress): Promise<string> {
     const cb = (_, file: string) => onProgress(file);
     ipcRenderer.on('convertSongProgress', cb)
-    return ipcRenderer.invoke('convertSong', params).then(res => {
+    return ipcRenderer.invoke('convertSong', params).finally(() => {
       ipcRenderer.off('convertSongProgress', cb);
-      return res;
     })
   },
 
   async concatVideos(params: {mp4Paths: string[]}, onProgress: OnProgress): Promise<string> {
     const cb = (_, file: string) => onProgress(file);
     ipcRenderer.on('concatVideosProgress', cb)
-    return ipcRenderer.invoke('concatVideos', params).then(res => {
+    return ipcRenderer.invoke('concatVideos', params).finally(() => {
       ipcRenderer.off('concatVideosProgress', cb);
-      return res;
     })
   },
 
