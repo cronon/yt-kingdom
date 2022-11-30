@@ -161,7 +161,7 @@ function Statusbar({text, status}: {status: Status, text: string}) {
     if (logsRef.current) {
       logsRef.current.scrollTop = logsRef.current.scrollHeight;
     }
-  }, [logsOpen])
+  }, [logsOpen, logs])
 
   return <div className={statusClass} style={{zIndex: zIndexes.statusbar}}>
     <div className={progressbarClass}>
@@ -183,7 +183,8 @@ function GlobalOverlay({isLoading}: {isLoading: boolean}) {
     left: 0,
     right: 0,
     background: 'rgba(255,255,255,0.7)',
-    zIndex: zIndexes.globalOverlay
+    zIndex: zIndexes.globalOverlay,
+    cursor: 'wait'
   } as const;
   return isLoading ? <div style={style} /> : <></>;
 }
@@ -191,10 +192,13 @@ function GlobalOverlay({isLoading}: {isLoading: boolean}) {
 function SuccessModal(props: {isShown: boolean, onHide: () => void, res: {songIds: string[], albumId: string, playlistId: string}}) {
   const A = ({href}: {href: string}) => <a href={href} target="_blank">{href}</a>
   const {albumId, playlistId, songIds} = props.res;
+  const hue = Math.round(Math.random() * 360);
+  const background = `hsl(${hue}deg 100% 75% / 70%)`;
 
-  const playlistHref = `https://youtu.be/`+songIds[0]+'?list='+playlistId
+  const playlistHref = `https://youtu.be/`+songIds[0]+'?list='+playlistId;
+
   if (props.isShown) {
-    return <div className="y-success-modal-overlay" style={{zIndex: zIndexes.successModal}}>
+    return <div className="y-success-modal-overlay" style={{zIndex: zIndexes.successModal, background}}>
         <div className="y-success-modal">
           <h1>Uploaded successfully</h1>
           {albumId && <div className="y-success-modal-album-link">Album link <A href={`https://youtu.be/`+albumId} /></div>}
