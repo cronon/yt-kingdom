@@ -8,7 +8,7 @@ import { UseLogin, useLogin } from './useLogin';
 import { Songlist } from './components/Songlist/Songlist';
 import { ErrorBoundary } from './ErrorBoundary';
 
-const showMockData = false;
+const showMockData = true;
 function getDefaultData(showMockData: boolean) {
   if (showMockData) {
     return {

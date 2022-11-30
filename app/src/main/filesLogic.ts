@@ -90,8 +90,9 @@ async function convertSong(songPath: string, picturePath: string = defaultPictur
     '-i', songPath,
     '-c:a', 'copy',
     '-c:v', 'libx264',
-    '-vf', 'format=yuv420p', // https://trac.ffmpeg.org/wiki/Encode/H.264 encoding for dumb players
+    '-vf', 'format=yuvj420p', // https://trac.ffmpeg.org/wiki/Encode/H.264 encoding for dumb players
     '-y',
+
     '-shortest', mp4Path,
   ],
     (data) => {},
@@ -180,17 +181,16 @@ async function fileOpenDialog(onProgress: (fileName: string) => void): Promise<A
 async function readMp3(filepath: string): Promise<string> {
   logger.info('Reading an mp3', filepath);
   const {allstderr: stderr} = await ffmpegCommand([
-    '-v', 'quiet',
     '-stats',
     '-i', filepath,
     '-f', 'null',
     '-'
   ])
-  const time = stderr.match(/time=(\d\d\:\d\d:\d\d)/)
-  if (time) {
-    return time[1];
+  const duration = stderr.match(/Duration\: (\d\d\:\d\d:\d\d)\.\d\d/)
+  if (duration) {
+    return duration[1];
   } else {
-    throw new Error('Cant read time from an mp3' + filepath)
+    throw new Error('Cant read duration from an mp3 ' + filepath)
   }
 }
 
