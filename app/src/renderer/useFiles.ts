@@ -166,38 +166,38 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
       // const albumMp4 = `C:\\Users\\HP-PC\\Documents\\pet\\uploader\\app\\temp\\total.mp4`
 
       const songIds: string[] = [];
-      // if (uploadSongs) {
-      //   for (const songWithMp4 of songsWithMp4) {
-      //     const title = songWithMp4[1].title;
-      //     const description = getSongPreview(songWithMp4[1]);
-      //     const mp4Path = songWithMp4[0];
-      //     setStatus('Uploading ' + title, 'inprogress')
-      //     const onProgress = (uploadPercent: string) => setStatus(uploadPercent+' Uploading ' + title, 'inprogress')
-      //     const res = await window.electronApi.youtubeUpload({mp4Path, title, description}, onProgress);
-      //     songIds.push(res.id)
-      //   }
-      //   setStatus('Idle', 'done');
-      // }
+      if (uploadSongs) {
+        for (const songWithMp4 of songsWithMp4) {
+          const title = songWithMp4[1].title;
+          const description = getSongPreview(songWithMp4[1]);
+          const mp4Path = songWithMp4[0];
+          setStatus('Uploading ' + title, 'inprogress')
+          const onProgress = (uploadPercent: string) => setStatus(uploadPercent+' Uploading ' + title, 'inprogress')
+          const res = await window.electronApi.youtubeUpload({mp4Path, title, description}, onProgress);
+          songIds.push(res.id)
+        }
+        setStatus('Idle', 'done');
+      }
       let albumId = '';
 
-      // if (uploadAlbum) {
-      //   setStatus('Uploading album video', 'inprogress')
-      //   const onProgress = (uploadPercent: string) => setStatus(uploadPercent + ' Uploading album video', 'inprogress')
-      //   const albumUploadRes = await window.electronApi.youtubeUpload({
-      //     mp4Path: albumMp4,
-      //     title: albumName,
-      //     description: albumPreview
-      //   }, onProgress);
-      //   albumId = albumUploadRes.id;
-      //   setStatus('Idle', 'done');
-      // }
+      if (uploadAlbum) {
+        setStatus('Uploading album video', 'inprogress')
+        const onProgress = (uploadPercent: string) => setStatus(uploadPercent + ' Uploading album video', 'inprogress')
+        const albumUploadRes = await window.electronApi.youtubeUpload({
+          mp4Path: albumMp4,
+          title: albumName,
+          description: albumPreview
+        }, onProgress);
+        albumId = albumUploadRes.id;
+        setStatus('Idle', 'done');
+      }
       let playlistId = '';
-      // if (createPlaylist) {
-      //   setStatus('Creating playlist', 'inprogress')
-      //   const playlistRes = await window.electronApi.youtubeCreatePlaylist({videoIds: songIds, name: albumName})
-      //   playlistId = playlistRes.id;
-      //   setStatus('Idle', 'done');
-      // }
+      if (createPlaylist) {
+        setStatus('Creating playlist', 'inprogress')
+        const playlistRes = await window.electronApi.youtubeCreatePlaylist({videoIds: songIds, name: albumName})
+        playlistId = playlistRes.id;
+        setStatus('Idle', 'done');
+      }
 
       // const playlistId = 'PLTrC-Aycr2aVEdT9THLUs7HRN6yq0KOrp';
       // const songIds = ['MsP-LQtTrzk', '9zfExPGaBmM']
