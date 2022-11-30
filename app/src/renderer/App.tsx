@@ -46,7 +46,7 @@ const Main = () => {
     albumTemplate, setAlbumTemplate, albumPreview,
     albumName, setAlbumName,
     uploadAlbum, setUploadAlbum,
-    status
+    status, setStatus
   } = useFiles({isLoading, setIsLoading, showMockData});
 
   const songTemplatePlaceholder = `Artist - %track%
@@ -79,6 +79,7 @@ follow on https://soundcloud.com/
   const startConvertClick = () => withLoading(startConvert)
   const convertAndUploadClick = async () => {
     withLoading(async () => {
+      setStatus('Checking Youtube Login', 'inprogress');
       const isLoggedIn = await useLoginHook.checkLogin();
       if (!isLoggedIn) return;
       const response = await convertAndUpload({uploadSongs, createPlaylist});

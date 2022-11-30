@@ -30,6 +30,7 @@ interface UseFiles {
     status: Status;
     text: string;
   };
+  setStatus: (text: string, status: Status) => void;
 }
 
 let _id = 0;
@@ -140,6 +141,7 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
       setStatus('Converting song '+song.title, 'inprogress');
       await window.electronApi.convertSong({song, picture}, status => setStatus(status, 'inprogress'));
     }
+    setStatus('Idle', 'done');
   }
 
   async function convertAndUpload({uploadSongs, createPlaylist}: {uploadSongs: boolean, createPlaylist: boolean}){
@@ -219,6 +221,6 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
     songTemplate, setSongTemplate, songPreview,
     albumTemplate, setAlbumTemplate, albumPreview,
     albumName, setAlbumName, uploadAlbum, setUploadAlbum,
-    status: status
+    status: status, setStatus
   }
 }

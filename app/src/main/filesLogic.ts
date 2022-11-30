@@ -67,6 +67,7 @@ async function concatVideos(mp4Paths: string[], onProgress: OnProgress): Promise
   console.log('TOTAL DURATION', totalDurations, totalDuration)
   await ffmpegCommand([
     ...inputs,
+    '-tune', 'stillimage',
     '-filter_complex', filter_complex,
     '-map', '[v]',
     '-map', '[a]',
@@ -96,6 +97,8 @@ async function convertSong(songPath: string, picturePath: string = defaultPictur
     '-i', songPath,
     '-c:a', 'copy',
     '-c:v', 'libx264',
+    '-tune', 'stillimage',
+    '-shortest', '-fflags', '+shortest',
     '-vf', 'format=yuvj420p', // https://trac.ffmpeg.org/wiki/Encode/H.264 encoding for dumb players
     '-y',
 
