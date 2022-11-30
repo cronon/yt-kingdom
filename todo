@@ -1,34 +1,75 @@
-better icon for remove song
-where to store client id when distributing app
 
-checkbox to create youtube playlist
-checkbox to upload separate songs
+todo: stretch short names of mp3s
+auto scroll logs
+"02. Night tales" textarea had a vertiacal scrollbar
+cancel button during inprogress
+loading cursor
+a little less yellow links in the success modal
 
-how to get logs in prod? electron.log?
-pass isDebug on UI
+maybe make an actual request to YT before converting
+what happen if remove permissions for the app in youtube
+handle YT error without reload
 
-clean temp folder?
+try reading tags, so it won't show numbers in front of the
+try to avoid reconverting in concatenation step
 
+seems YT lowers sound quiality, maybe even signifacantly, is it possible to do something about it
 test sound quality
 
-check out npm audit 2h
-deal with the warning on startup 15m
+pass isDebug on UI
+pass isDebug on UI - again mock data is used as defaukt x2
+
+more understandable update notification and update installation
+
+success screen: add youtube studio link
+menu improvements
+use percent for convert
+clean temp folder?
+
+maybe show the contents of the temp folder and save there a json in order not to convert again if YT error
+
 
 https://www.electronjs.org/docs/latest/tutorial/security 1h
   remove unsafe-inline
 
-what happen if remove permissions for the app in youtube
+how to get logs in prod? electron.log?
+
+where to store client id when distributing app
+
+
+
+
+check out npm audit 2h
+
+success screen: maybe add uploaded ids to the global storage with songs
+
+modal keybard and a11y
+
+deal with the warning on startup 15m
+
+on a wide screen the dimensions number is far away from the pic
+
+
+setUploadAlbum and uploadAlbum move to App.tsx
+
 
 
 show user avatar from Youtube. items.snippet.thumbnails has an array of links
 jumping japanese charachters in .y-progressbar {
 
-select several picutres in the dialong, then choose between them with arrows
-
 use a class for Time - doesn't hurt anything right now, but Martin Fowler insists on it
 does it make sense not to use setSongs in UI code
 
-done
+
+
+##### done #####
+does it go so slowly because I'm converting 320kbits? - no, it is just slower on win8
+
+better icon for remove song
+
+checkbox to create youtube playlist
+checkbox to upload separate songs
+
 remove .mp3 part from the playlist
 
 filefilter: mp3, jpg, png - done with it quickly when it became annoying

@@ -3,11 +3,10 @@
   overflow: auto;
 }
 .y-title-td {
-  vertical-align: baseline;
   position: relative;
   cursor: text;
+  width: 100%;
 }
-
 .y-title-td:hover {
   background-color: rgba(255,255,255,.2);
 }
@@ -15,8 +14,8 @@
   position: absolute;
   top: -2px; /* make it bigger than the original td because textarea has extra paddings */
   bottom: -2px;
-  left: 0;
-  right: 0;
+  left: -2px;
+  right: -2px;
   resize: none;
   font-family: sans-serif;
   font-size: 1rem;

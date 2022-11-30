@@ -1,6 +1,6 @@
 {
   "name": "yt-kingdom",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Add cover picture to songs and upload them on Youtube",
   "keywords": [
     "electron",
