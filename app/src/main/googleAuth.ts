@@ -102,7 +102,7 @@ export async function authenticate(client: OAuth2Client, scopes: string[]): Prom
         // client.setCredentials(tokens)
 
         resolve(client);
-        res.end('Authentication successful! Please return to the app.');
+        res.end('Authentication successful! Please close this window and return to the YtKingdom app.');
       } catch (e) {
         reject(e);
       } finally {

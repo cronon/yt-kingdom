@@ -30,11 +30,8 @@ const electronApi = {
       ipcRenderer.off('concatVideosProgress', cb);
     })
   },
-
-  async onLoginChange(callback: (auth: Auth) => void) {
-    ipcRenderer.on('onLoginChange', (event, auth: Auth) => {
-      callback(auth)
-    })
+  async getChannel(): Promise<{username: string, channelId: string} | null> {
+    return ipcRenderer.invoke('getChannel');
   },
   async youtubeLogin(): Promise<{username: string, loginError: string | null}> {
     return ipcRenderer.invoke('youtubeLogin')

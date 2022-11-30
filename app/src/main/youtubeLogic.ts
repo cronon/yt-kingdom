@@ -7,12 +7,14 @@ import { logger } from './logger';
 
 
 export function youtubeLogic(ipcMain: Electron.IpcMain, send: (channel: string, ...args: any[]) => void) {
+  ipcMain.handle('getChannel', getChannel)
   ipcMain.handle('youtubeLogin', youtubeLogin);
   ipcMain.handle('youtubeUpload', (event, args) => {
     const onProgress = (uploadPercent: string) => send('youtubeUploadProgress', uploadPercent);
     return youtubeUpload(args, onProgress)
   });
   ipcMain.handle('youtubeCreatePlaylist', (event, args) => youtubeCreatePlaylist(args));
+
 }
 
 async function getYoutube(): Promise<youtube_v3.Youtube> {
@@ -36,6 +38,28 @@ export async function getUsername(): Promise<{username: string; loginError: stri
   }
   const username = channels[0]!.snippet!.title!;
   return {username: username, loginError: null}
+}
+
+async function getChannel(): Promise<{username: string, channelId: string} | null> {
+  const {client, isLoggedIn} = await createAuth();
+  try {
+    await client.refreshAccessToken()
+  } catch(e: any) {
+    return null;
+  }
+  if (!isLoggedIn) return null;
+  const youtube = await getYoutube();
+  const response = await youtube.channels.list({
+    "part": [
+      "snippet"
+    ],
+    "mine": true
+  });
+  const channels = response.data.items
+  if (!channels || channels.length  === 0) {
+    return null;;
+  }
+  return {username: channels[0]!.snippet!.title!, channelId: channels[0]!.id!}
 }
 
 async function youtubeLogin(): Promise<{username: string, loginError: string | null}> {

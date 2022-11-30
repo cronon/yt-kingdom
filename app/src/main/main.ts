@@ -46,24 +46,6 @@ function send(channel: string, ...args: any[]){
 filesLogic(ipcMain, send);
 youtubeLogic(ipcMain, send);
 
-
-const auth = {
-  isLoggedIn: false,
-  username: null as (null | string),
-  loginError: null as (null|string)
-}
-createAuth().then(async (params) => {
-  auth.isLoggedIn = params.isLoggedIn;
-  if (auth.isLoggedIn) {
-    const {username, loginError} = await getUsername();
-    auth.username = username;
-    auth.loginError = loginError;
-    if (mainWindow) {
-      mainWindow.webContents.send('onLoginChange', auth)
-    }
-  }
-});
-
 if (isDebug) {
   require('electron-debug')({ showDevTools: false });
 }
@@ -120,7 +102,6 @@ async function createWindow() {
     },
   });
 
-  mainWindow.webContents.send('onLoginChange', auth);
   logger.subs.push((level, message) => mainWindow?.webContents.send('onLogs', message))
 
 

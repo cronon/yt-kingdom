@@ -11,15 +11,15 @@ export interface UseLogin {
 function getDefaultData(showMockData: boolean): UseLogin {
   if (showMockData) {
     return {
-      username: '',
-      isLoggedIn: false,
+      username: localStorage.getItem('username') || '',
+      isLoggedIn: !!localStorage.getItem('username'),
       loginError: null,
       login: () => {},
     }
   } else {
     return {
-      username: '',
-      isLoggedIn: false,
+      username: localStorage.getItem('username') || '',
+      isLoggedIn: !!localStorage.getItem('username'),
       loginError: null,
       login: () => {},
     }
@@ -31,11 +31,19 @@ export function useLogin({isLoading, setIsLoading, showMockData}: {showMockData:
   const [username, setUsername] = useState(defaultData.username);
   const [loginError, setLoginError] = useState<null | string>(defaultData.loginError);
   useEffect(() => {
-    window.electronApi.onLoginChange((auth: Auth) => {
-      setIsLoggedIn(auth.isLoggedIn);
-      if (auth.username) setUsername(auth.username);
-      if (auth.loginError) setLoginError(auth.loginError);
-    });
+    window.electronApi.getChannel().then(res => {
+      if (res) {
+        console.log('channelId', res.channelId, res.username)
+        setUsername(res.username);
+        setIsLoggedIn(true);
+        localStorage.setItem('username', res.username)
+      } else {
+        setUsername('')
+        setIsLoggedIn(false);
+        localStorage.removeItem('username');
+      }
+    })
+
   }, []);
 
   async function login() {
@@ -44,8 +52,10 @@ export function useLogin({isLoading, setIsLoading, showMockData}: {showMockData:
     if (loginError) {
       setLoginError(loginError);
       setIsLoggedIn(false);
+      localStorage.removeItem('username');
     } else {
       setUsername(username);
+      localStorage.setItem('username', username)
       setLoginError(null);
       setIsLoggedIn(true);
     }
