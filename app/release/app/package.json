@@ -30,7 +30,6 @@
     "link-modules": "node -r ts-node/register ../../.erb/scripts/link-modules.ts"
   },
   "dependencies": {
-    "ffmpeg-static-electron": "^2.0.3",
     "keytar": "^7.9.0"
   },
   "devDependencies": {
