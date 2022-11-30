@@ -8,7 +8,8 @@ import { UseLogin, useLogin } from './useLogin';
 import { Songlist } from './components/Songlist/Songlist';
 import { ErrorBoundary } from './ErrorBoundary';
 
-const showMockData = true;
+
+
 function getDefaultData(showMockData: boolean) {
   if (showMockData) {
     return {
@@ -35,6 +36,10 @@ function useLogs() {
 }
 
 const Main = () => {
+  console.log(window.electronApi)
+  const showMockData = window.electronApi.isDebug === false ?
+    false :
+    true
   const defaultData = getDefaultData(showMockData);
   const [isLoading, setIsLoading] = useState(defaultData.isLoading);
   const {songs, setSongs, addFilesDialog, picture, startConvert, convertAndUpload,
@@ -61,7 +66,7 @@ follow on https://soundcloud.com/
 
   const [uploadSongs, setUploadSongs] = useState(true);
   const [createPlaylist, setCreatePlaylist] = useState(true);
-  const [successModalShown, setSuccessModalShow] = useState(false);
+  const [successModalShown, setSuccessModalShow] = useState(true);
   const [ytResponse, setYtResponse] = useState({songIds: [] as string[], albumId: '', playlistId: ''});
   const useLoginHook = useLogin({isLoading, setIsLoading, showMockData});
 
@@ -76,7 +81,7 @@ follow on https://soundcloud.com/
   return (
     <div className="y-main">
       <GlobalOverlay isLoading={isLoading} />
-      <SuccessModal isShown={successModalShown} onHide={() => setSuccessModalShow(false)} res={ytResponse} />
+      <SuccessModal channelId={useLoginHook.channelId} isShown={successModalShown} onHide={() => setSuccessModalShow(false)} res={ytResponse} />
       <LoginBar useLoginHook={useLoginHook} />
       <div className="y-stage">
         <div className="y-playlist">
@@ -194,7 +199,7 @@ function GlobalOverlay({isLoading}: {isLoading: boolean}) {
   return isLoading ? <div style={style} /> : <></>;
 }
 
-function SuccessModal(props: {isShown: boolean, onHide: () => void, res: {songIds: string[], albumId: string, playlistId: string}}) {
+function SuccessModal(props: {channelId: string, isShown: boolean, onHide: () => void, res: {songIds: string[], albumId: string, playlistId: string}}) {
   const A = ({href}: {href: string}) => <a href={href} target="_blank">{href}</a>
   const {albumId, playlistId, songIds} = props.res;
   const hue = Math.round(Math.random() * 360);
@@ -206,6 +211,8 @@ function SuccessModal(props: {isShown: boolean, onHide: () => void, res: {songId
     return <div className="y-success-modal-overlay" style={{zIndex: zIndexes.successModal, background}}>
         <div className="y-success-modal">
           <h1>Uploaded successfully</h1>
+          <div style={{marginTop: '1rem'}}>Youtube Studio Link <A href={`https://studio.youtube.com/channel/${props.channelId}/videos/`} />
+          </div>
           {albumId && <div className="y-success-modal-album-link">Album link <A href={`https://youtu.be/`+albumId} /></div>}
           {playlistId && <div className="y-success-modal-playlist-link">Playlist link <A href={playlistHref} /></div>}
           {!!songIds.length && <div className="y-success-modal-songs">

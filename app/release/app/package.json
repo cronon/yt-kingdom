@@ -26,13 +26,10 @@
   "main": "./dist/main/main.js",
   "scripts": {
     "rebuild": "node -r ts-node/register ../../.erb/scripts/electron-rebuild.js",
-    "postinstall": "npm run rebuild && npm run link-modules && rimraf node_modules/ffmpeg-static-electron/bin/linux node_modules/ffmpeg-static-electron/bin/mac ",
+    "postinstall": "npm run rebuild && npm run link-modules",
     "link-modules": "node -r ts-node/register ../../.erb/scripts/link-modules.ts"
   },
   "dependencies": {
     "keytar": "^7.9.0"
-  },
-  "devDependencies": {
-    "rimraf": "latest"
   }
 }

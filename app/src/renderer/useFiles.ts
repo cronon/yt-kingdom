@@ -76,10 +76,10 @@ https://soundcloud.com/kiarabirth`,
       songs: [],
       picture: {ext: 'png', base64: '', path: './assets/emptyCover.jpg'},
       songTemplate: `Artist - %track%
-  Ablum (2022)
+Ablum (2022)
 
-  #music #electronic
-  follow on https://soundcloud.com/`,
+#music #electronic
+follow on https://soundcloud.com/`,
       albumName: 'Artist - Album (2022)',
       albumTemplate: `Artist - Album (2022)
 

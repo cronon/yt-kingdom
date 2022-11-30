@@ -9,8 +9,9 @@ import { appFolder } from "./config";
 import { OnProgress } from "common";
 import sizeOf from 'image-size'
 
-// var pathToFfmpeg =  require('ffmpeg-static-electron').path.replace('app.asar', 'app.asar.unpacked');
-const pathToFfmpeg = path.join(appFolder, 'assets', 'ffmpeg.exe');
+const devPath = path.join(appFolder, 'assets', 'ffmpeg.exe');
+const prodPath = path.join(appFolder, 'resources', 'assets', 'ffmpeg.exe')
+const pathToFfmpeg = fs.existsSync(devPath) ? devPath : prodPath;
 
 const tempFolder = {
   path: path.join(appFolder, 'temp'),

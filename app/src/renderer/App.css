@@ -196,6 +196,7 @@ button:hover {
 .y-success-modal-ok {
   display: flex;
   justify-content: space-around;
+  margin-top: 1rem;
 }
 .y-success-modal-songs {
   margin-top: 1rem;

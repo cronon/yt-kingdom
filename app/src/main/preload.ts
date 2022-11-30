@@ -2,11 +2,12 @@ import { Picture } from 'common/picture';
 import { Song } from 'common/song';
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 import { Auth } from 'common/auth';
-import { OnProgress } from 'common';
+import { OnProgress, isDebug } from 'common';
 
 
 
 const electronApi = {
+  isDebug: isDebug,
   async openFileDialog(onProgress: OnProgress): Promise<Array<Picture | Song>> {
     const cb = (_, file: string) => onProgress(file)
     ipcRenderer.on('openFileDialogProgress', cb);

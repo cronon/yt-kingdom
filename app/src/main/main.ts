@@ -19,10 +19,9 @@ import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import {filesLogic} from './filesLogic';
-import { getUsername, youtubeLogic } from './youtubeLogic';
-import { createAuth } from './googleAuth';
+import { youtubeLogic } from './youtubeLogic';
 import {logger} from './logger';
-import { isDebug } from './config';
+import { isDebug } from '../common';
 
 
 process.on('unhandledRejection', (e: any) => logger.error(e.toString()))
@@ -45,6 +44,7 @@ function send(channel: string, ...args: any[]){
 
 filesLogic(ipcMain, send);
 youtubeLogic(ipcMain, send);
+
 
 if (isDebug) {
   require('electron-debug')({ showDevTools: false });
