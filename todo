@@ -1,59 +1,47 @@
 unsorted
 auto close tab after redirect
 --
-try reading tags, so it won't show numbers in front of the
+where to store client id when distributing app
+e2e test
+show error logs in the UI
+read about logs and switch to el.log 1h
+https://www.electronjs.org/docs/latest/tutorial/security 1h
+  remove unsafe-inline
+check out npm audit 2h
+on a wide screen the dimensions number is far away from the pic
+show logs double chevron icon is ugly on win8
+drag and drop
+cancel button during inprogress+1
+show total progress in percents
+try reading tags, so it won't show numbers in front of the filenames
+
 try to avoid reconverting in concatenation step
-
-
 
 more understandable update notification and update installation
 
-success screen: add youtube studio link
-menu improvements
-use percent for convert
-clean temp folder?
+jumping japanese charachters in .y-progressbar {
+clean temp folder 15m - not a single command
 
-show logs double chevron icon is ugly on win8
+have a global storage of data, methods, separate logs and status
+success screen: maybe add uploaded ids to the global storage with songs
+
+show user avatar from Youtube. items.snippet.thumbnails has an array of links
 
 maybe show the contents of the temp folder and save there a json in order not to convert again if YT error
-
-
-https://www.electronjs.org/docs/latest/tutorial/security 1h
-  remove unsafe-inline
-
-how to get logs in prod? electron.log?
-
-where to store client id when distributing app
-
-
-
-
-check out npm audit 2h
-
-success screen: maybe add uploaded ids to the global storage with songs
 
 modal keybard and a11y
 
 deal with the warning on startup 15m
 
-on a wide screen the dimensions number is far away from the pic
-
-
-setUploadAlbum and uploadAlbum move to App.tsx
-
-
-
-show user avatar from Youtube. items.snippet.thumbnails has an array of links
-jumping japanese charachters in .y-progressbar {
-
 use a class for Time - doesn't hurt anything right now, but Martin Fowler insists on it
   + became necessary when calculating percents
 
-does it make sense not to use setSongs in UI code
-
-
 
 ##### done #####
+
+success screen: add youtube studio link
+menu improvements
+use percent for convert
 
 pass isDebug on UI
 pass isDebug on UI - again mock data is used as defaukt x3

@@ -10,6 +10,7 @@ import { OnProgress } from "common";
 import sizeOf from 'image-size'
 import { durationPercent } from "../common/timeUtils/durationPercent";
 import { addLongTimes, addTimecodes } from "../common/timeUtils/addTimecodes";
+import { stopCommands } from "./stopCommands";
 
 const devPath = path.join(appFolder, 'assets', 'ffmpeg.exe');
 const prodPath = path.join(appFolder, 'resources', 'assets', 'ffmpeg.exe')
@@ -39,6 +40,7 @@ export function filesLogic(ipcMain: Electron.IpcMain, send: (channel: string, ..
     return fileOpenDialog(onProgress)
   });
 
+
   ipcMain.handle('convertSong', async (event, args: {song: Song, picture: Picture}) => {
     const {song, picture} = args;
     logger.info('Start converting song', JSON.stringify(song));
@@ -47,6 +49,9 @@ export function filesLogic(ipcMain: Electron.IpcMain, send: (channel: string, ..
     logger.info('Converted songs', mp4Path)
     return mp4Path;
   });
+  ipcMain.handle('convertSongStop', async (event, args) => {
+    stopCommands.forEach(c => c());
+  })
 
   ipcMain.handle('concatVideos', async (event, args: {mp4Paths: string[]}) => {
     const onProgress = (status: string) => send('concatVideosProgress', status);
@@ -64,7 +69,7 @@ async function concatVideos(mp4Paths: string[], onProgress: OnProgress): Promise
   const filter_complex = `${filters} concat=n=${mp4Paths.length}:v=1:a=1 [v] [a]`
   const totalDurations = await Promise.all(mp4Paths.map(async p => await readMp3(p)));
   const totalDuration = totalDurations.reduce((acc, d) => addLongTimes(acc, d), '00:00:00');
-  console.log('TOTAL DURATION', totalDurations, totalDuration)
+
   await ffmpegCommand([
     ...inputs,
     '-tune', 'stillimage',
@@ -98,7 +103,7 @@ async function convertSong(songPath: string, picturePath: string = defaultPictur
     '-c:a', 'copy',
     '-c:v', 'libx264',
     '-tune', 'stillimage',
-    '-shortest', '-fflags', '+shortest',
+    '-shortest', '-fflags', '+shortest', // https://stackoverflow.com/a/55804507 adds 2s silence in the end without it
     '-vf', 'format=yuvj420p', // https://trac.ffmpeg.org/wiki/Encode/H.264 encoding for dumb players
     '-y',
 
@@ -116,13 +121,23 @@ async function convertSong(songPath: string, picturePath: string = defaultPictur
   return mp4Path;
 }
 
+interface FfmpegCommandResult {
+  promise: Promise<{allstdout: string, allstderr: string}>;
+  stop: () => void
+}
 async function ffmpegCommand(args: string[], onStdout?: (data: string) => void, onStdErr?: (data: string) => void): Promise<{allstdout: string, allstderr: string}> {
   logger.info(pathToFfmpeg + ' ' + args.join(' '));
 
   const command = spawn(pathToFfmpeg, args);
   let allstdout: string = '';
   let allstderr: string = '';
-  return new Promise((res, rej) => {
+
+  stopCommands.push(() => command.kill());
+  return new Promise<{allstdout: string, allstderr: string}>((res, rej) => {
+    stopCommands.push(() => res({
+      allstdout,
+      allstderr
+    }));
     command.stdout.on('data', (data: string) => {
       logger.info(`ffmpeg stdout: ${data.toString()}`);
       onStdout && onStdout(data);
@@ -146,8 +161,10 @@ async function ffmpegCommand(args: string[], onStdout?: (data: string) => void, 
         rej(code);
       }
     });
-  })
+  });
 }
+
+
 let _id = 0;
 function getId() {
   _id +=1;

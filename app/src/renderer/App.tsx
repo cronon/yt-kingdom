@@ -187,6 +187,7 @@ function Statusbar({text, status}: {status: Status, text: string}) {
   return <div className={statusClass} style={{zIndex: zIndexes.statusbar}}>
     <div className={progressbarClass}>
       <span className="y-status-text" title={text}>{text}</span>
+      {/* {status === 'inprogress' && <button onClick={window.electronApi.convertSongStop}>Stop</button>} */}
       {!logsOpen && <button onClick={e => setLogsOpen(true)}>&#65085; Show logs</button>}
       {logsOpen && <button onClick={e => setLogsOpen(false)}>︾ Hide logs</button>}
     </div>

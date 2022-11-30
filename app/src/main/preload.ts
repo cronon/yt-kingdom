@@ -23,7 +23,9 @@ const electronApi = {
       ipcRenderer.off('convertSongProgress', cb);
     })
   },
-
+  async convertSongStop(): Promise<void> {
+    return ipcRenderer.invoke('convertSongStop');
+  },
   async concatVideos(params: {mp4Paths: string[]}, onProgress: OnProgress): Promise<string> {
     const cb = (_, file: string) => onProgress(file);
     ipcRenderer.on('concatVideosProgress', cb)
