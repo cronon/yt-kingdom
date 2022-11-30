@@ -1,11 +1,8 @@
 import { Picture } from "common/picture";
 import { Song } from "common/song";
 import { useState } from "react";
-import { timecodes } from "./components/Timecodes/timecodes";
+import { timecodes } from "../common/timeUtils/timecodes";
 
-const zip = <A, B>(a: A[], b:B[]) =>  a.map(function(e, i) {
-  return [e, b[i]] as ([A, B])
-});
 export type Status = 'done' | 'inprogress' | 'error';
 
 interface UseFiles {
@@ -167,7 +164,7 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
       if (uploadAlbum) {
         setStatus('Concatenating album video', 'inprogress');
         const mp4Paths = songsWithMp4.map(sm => sm[0]);
-        albumMp4 = await window.electronApi.concatVideos({mp4Paths}, status => setStatus(status, 'inprogress'));
+        albumMp4 = await window.electronApi.concatVideos({mp4Paths}, percent => setStatus(percent + ' Concatenating album video', 'inprogress'));
       }
 
       // const albumMp4 = `C:\\Users\\HP-PC\\Documents\\pet\\uploader\\app\\temp\\total.mp4`

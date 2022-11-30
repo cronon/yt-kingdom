@@ -66,7 +66,7 @@ follow on https://soundcloud.com/
 
   const [uploadSongs, setUploadSongs] = useState(true);
   const [createPlaylist, setCreatePlaylist] = useState(true);
-  const [successModalShown, setSuccessModalShow] = useState(true);
+  const [successModalShown, setSuccessModalShow] = useState(false);
   const [ytResponse, setYtResponse] = useState({songIds: [] as string[], albumId: '', playlistId: ''});
   const useLoginHook = useLogin({isLoading, setIsLoading, showMockData});
 

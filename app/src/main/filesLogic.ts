@@ -8,6 +8,8 @@ import {logger} from './logger';
 import { appFolder } from "./config";
 import { OnProgress } from "common";
 import sizeOf from 'image-size'
+import { durationPercent } from "../common/timeUtils/durationPercent";
+import { addLongTimes, addTimecodes } from "../common/timeUtils/addTimecodes";
 
 const devPath = path.join(appFolder, 'assets', 'ffmpeg.exe');
 const prodPath = path.join(appFolder, 'resources', 'assets', 'ffmpeg.exe')
@@ -60,7 +62,9 @@ async function concatVideos(mp4Paths: string[], onProgress: OnProgress): Promise
   const inputs = mp4Paths.map(path => ['-i', path]).flat();
   const filters = mp4Paths.map((path, i) => `[${i}:v] [${i}:a]`).join(' ');
   const filter_complex = `${filters} concat=n=${mp4Paths.length}:v=1:a=1 [v] [a]`
-
+  const totalDurations = await Promise.all(mp4Paths.map(async p => await readMp3(p)));
+  const totalDuration = totalDurations.reduce((acc, d) => addLongTimes(acc, d), '00:00:00');
+  console.log('TOTAL DURATION', totalDurations, totalDuration)
   await ffmpegCommand([
     ...inputs,
     '-filter_complex', filter_complex,
@@ -74,7 +78,7 @@ async function concatVideos(mp4Paths: string[], onProgress: OnProgress): Promise
       // ffmpeg stderr: frame=  738 fps=0.0 q=28.0 Lsize=     778kB time=00:00:27.24 bitrate= 234.1kbits/s speed=48.6x
       const timeMatch = stderr.match(/time=(\d\d:\d\d:\d\d)/);
       if (timeMatch && timeMatch[1]) {
-        onProgress('Concatenating video ' + timeMatch[1] )
+        onProgress(durationPercent(timeMatch[1], totalDuration)+'%')
       }
     }
   )
@@ -84,7 +88,8 @@ async function concatVideos(mp4Paths: string[], onProgress: OnProgress): Promise
 const defaultPicture = path.join(appFolder, 'assets/emptyCover.jpg');
 async function convertSong(songPath: string, picturePath: string = defaultPicture, onProgress: OnProgress): Promise<string> {
   const songName = path.basename(songPath);
-  const mp4Path = tempFolder.tempPath(songName+'.mp4')
+  const mp4Path = tempFolder.tempPath(songName+'.mp4');
+  const duration = await readMp3(songPath);
   await ffmpegCommand([
     '-loop', '1',
     '-i', picturePath,
@@ -101,7 +106,7 @@ async function convertSong(songPath: string, picturePath: string = defaultPictur
       // ffmpeg stderr: frame=  738 fps=0.0 q=28.0 Lsize=     778kB time=00:00:27.24 bitrate= 234.1kbits/s speed=48.6x
       const timeMatch = stderr.match(/time=(\d\d:\d\d:\d\d)/);
       if (timeMatch && timeMatch[1]) {
-        onProgress('Converting ' + timeMatch[1] + ' ' + songName + '')
+        onProgress('Converting ' + durationPercent(timeMatch[1], duration)+'% ' + songName + '')
       }
     }
   );

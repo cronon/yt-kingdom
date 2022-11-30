@@ -5,8 +5,6 @@ try reading tags, so it won't show numbers in front of the
 try to avoid reconverting in concatenation step
 
 
-pass isDebug on UI
-pass isDebug on UI - again mock data is used as defaukt x2
 
 more understandable update notification and update installation
 
@@ -49,11 +47,16 @@ show user avatar from Youtube. items.snippet.thumbnails has an array of links
 jumping japanese charachters in .y-progressbar {
 
 use a class for Time - doesn't hurt anything right now, but Martin Fowler insists on it
+  + became necessary when calculating percents
+
 does it make sense not to use setSongs in UI code
 
 
 
 ##### done #####
+
+pass isDebug on UI
+pass isDebug on UI - again mock data is used as defaukt x3
 
 seems YT lowers sound quiality, maybe even signifacantly, is it possible to do something about it
 test sound quality
