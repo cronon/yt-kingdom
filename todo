@@ -1,20 +1,9 @@
-
-todo: stretch short names of mp3s
-auto scroll logs
-"02. Night tales" textarea had a vertiacal scrollbar
-cancel button during inprogress
-loading cursor
-a little less yellow links in the success modal
-
-maybe make an actual request to YT before converting
-what happen if remove permissions for the app in youtube
-handle YT error without reload
-
+unsorted
+auto close tab after redirect
+--
 try reading tags, so it won't show numbers in front of the
 try to avoid reconverting in concatenation step
 
-seems YT lowers sound quiality, maybe even signifacantly, is it possible to do something about it
-test sound quality
 
 pass isDebug on UI
 pass isDebug on UI - again mock data is used as defaukt x2
@@ -65,6 +54,22 @@ does it make sense not to use setSongs in UI code
 
 
 ##### done #####
+
+seems YT lowers sound quiality, maybe even signifacantly, is it possible to do something about it
+test sound quality
+  YT does lower it, but there is nothing to do about it -
+
+todo: stretch short names of mp3s
+auto scroll logs
+"02. Night tales" textarea had a vertiacal scrollbar
+cancel button during inprogress
+loading cursor
+a little less yellow links in the success modal
+
+maybe make an actual request to YT before converting
+what happen if remove permissions for the app in youtube
+handle YT error without reload
+
 does it go so slowly because I'm converting 320kbits? - no, it is just slower on win8
 
 better icon for remove song

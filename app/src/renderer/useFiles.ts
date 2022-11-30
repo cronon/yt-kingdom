@@ -153,13 +153,15 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
 
   async function convertAndUpload({uploadSongs, createPlaylist}: {uploadSongs: boolean, createPlaylist: boolean}){
     setIsLoading(true);
+    const login = await window.electronApi.getChannel();
+    if (!login) throw new Error(`Youtube login got expired, please log in again.`);
     try {
       const songsWithMp4: [string, Song][] = []
-      // for (const song of songs) {
-      //   setStatus('Converting song '+song.title, 'inprogress');
-      //   const mp4Path = await window.electronApi.convertSong({song, picture}, status => setStatus(status, 'inprogress'))
-      //   songsWithMp4.push([mp4Path, song]);
-      // }
+      for (const song of songs) {
+        setStatus('Converting song '+song.title, 'inprogress');
+        const mp4Path = await window.electronApi.convertSong({song, picture}, status => setStatus(status, 'inprogress'))
+        songsWithMp4.push([mp4Path, song]);
+      }
 
       // let albumMp4 = '';
       // if (uploadAlbum) {
@@ -168,28 +170,23 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
       //   albumMp4 = await window.electronApi.concatVideos({mp4Paths}, status => setStatus(status, 'inprogress'));
       // }
 
+      const albumMp4 = `C:\\Users\\HP-PC\\Documents\\pet\\uploader\\app\\temp\\total.mp4`
 
-      // const mp4Paths = [
-      //     "C:\\Users\\HP-PC\\Documents\\pet\\uploader\\app\\temp\\Resignostic – Impatiently Doom Waits (Wax Ghosts version).mp3.mp4",
-      //     "C:\\Users\\HP-PC\\Documents\\pet\\uploader\\app\\temp\\sample027.mp3.mp4"
-      // ]
-      // const albumMp4 = `C:\\Users\\HP-PC\\Documents\\pet\\uploader\\app\\temp\\total.mp4`
+      const songIds: string[] = [];
+      if (uploadSongs) {
+        for (const songWithMp4 of songsWithMp4) {
+          const title = songWithMp4[1].title;
+          const description = getSongPreview(songWithMp4[1]);
+          const mp4Path = songWithMp4[0];
+          setStatus('Uploading ' + title, 'inprogress')
+          const onProgress = (uploadPercent: string) => setStatus(uploadPercent+' Uploading ' + title, 'inprogress')
+          const res = await window.electronApi.youtubeUpload({mp4Path, title, description}, onProgress);
+          songIds.push(res.id)
+        }
+        setStatus('Idle', 'done');
+      }
+      let albumId = '';
 
-      // const songIds: string[] = [];
-      // if (uploadSongs) {
-      //   for (const songWithMp4 of songsWithMp4) {
-      //     const title = songWithMp4[1].title;
-      //     const description = getSongPreview(songWithMp4[1]);
-      //     const mp4Path = songWithMp4[0];
-      //     setStatus('Uploading ' + title, 'inprogress')
-      //     const onProgress = (uploadPercent: string) => setStatus(uploadPercent+' Uploading ' + title, 'inprogress')
-      //     const res = await window.electronApi.youtubeUpload({mp4Path, title, description}, onProgress);
-      //     songIds.push(res.id)
-      //   }
-      //   setStatus('Idle', 'done');
-      // }
-      // let albumId = '';
-      // let playlistId = '';
       // if (uploadAlbum) {
       //   setStatus('Uploading album video', 'inprogress')
       //   const onProgress = (uploadPercent: string) => setStatus(uploadPercent + ' Uploading album video', 'inprogress')
@@ -201,6 +198,7 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
       //   albumId = albumUploadRes.id;
       //   setStatus('Idle', 'done');
       // }
+      let playlistId = '';
       // if (createPlaylist) {
       //   setStatus('Creating playlist', 'inprogress')
       //   const playlistRes = await window.electronApi.youtubeCreatePlaylist({videoIds: songIds, name: albumName})
@@ -208,9 +206,9 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
       //   setStatus('Idle', 'done');
       // }
 
-      const playlistId = 'PLTrC-Aycr2aVEdT9THLUs7HRN6yq0KOrp';
-      const songIds = ['MsP-LQtTrzk', '9zfExPGaBmM']
-      const albumId = 'ab5_c37mg-o';
+      // const playlistId = 'PLTrC-Aycr2aVEdT9THLUs7HRN6yq0KOrp';
+      // const songIds = ['MsP-LQtTrzk', '9zfExPGaBmM']
+      // const albumId = 'ab5_c37mg-o';
 
       const albumLink = 'https://youtu.be/'+albumId;
       const playlistLink = 'https://youtu.be/'+songIds[0]+'?list='+playlistId;

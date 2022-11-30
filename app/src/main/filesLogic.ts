@@ -160,7 +160,7 @@ async function fileOpenDialog(onProgress: (fileName: string) => void): Promise<A
       const duration = await readMp3(filepath);
       const title = path.parse(filepath).name
       parsedFiles.push({id: getId(), path: filepath, duration, title})
-    } else {
+    } else if (ext === '.jpg' || ext === '.png') {
       logger.info('Reading image', filepath);
       const {width, height} = sizeOf(filepath);
       if (!width || !height) {
@@ -171,6 +171,8 @@ async function fileOpenDialog(onProgress: (fileName: string) => void): Promise<A
       }
       const base64 =  fs.readFileSync(filepath).toString('base64');
       parsedFiles.push({path: filepath, base64, ext});
+    } else {
+      throw new Error(`Unsupported file extension ${ext} of ${filepath}`)
     }
   }
   return parsedFiles;

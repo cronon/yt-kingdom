@@ -4,13 +4,11 @@ import {useState, useEffect, useRef} from 'react';
 
 import { PictureShow } from './components/PictureShow/PictureShow';
 import { Status, useFiles } from './useFiles';
-import { useLogin } from './useLogin';
+import { UseLogin, useLogin } from './useLogin';
 import { Songlist } from './components/Songlist/Songlist';
-import React from 'react';
 import { ErrorBoundary } from './ErrorBoundary';
-import { shell } from 'electron';
 
-const showMockData = true;
+const showMockData = false;
 function getDefaultData(showMockData: boolean) {
   if (showMockData) {
     return {
@@ -64,17 +62,22 @@ follow on https://soundcloud.com/
   const [uploadSongs, setUploadSongs] = useState(true);
   const [createPlaylist, setCreatePlaylist] = useState(true);
   const [successModalShown, setSuccessModalShow] = useState(false);
-  const [ytResponse, setYtResponse] = useState({songIds: [] as string[], albumId: '', playlistId: ''})
+  const [ytResponse, setYtResponse] = useState({songIds: [] as string[], albumId: '', playlistId: ''});
+  const useLoginHook = useLogin({isLoading, setIsLoading, showMockData});
+
   const convertAndUploadClick = async () => {
+    const isLoggedIn = await useLoginHook.checkLogin();
+    if (!isLoggedIn) return;
     const response = await convertAndUpload({uploadSongs, createPlaylist});
     setYtResponse(response);
     setSuccessModalShow(true);
   }
+
   return (
     <div className="y-main">
       <GlobalOverlay isLoading={isLoading} />
       <SuccessModal isShown={successModalShown} onHide={() => setSuccessModalShow(false)} res={ytResponse} />
-      <LoginBar isLoading={isLoading} setIsLoading={setIsLoading} showMockData={showMockData}/>
+      <LoginBar useLoginHook={useLoginHook} />
       <div className="y-stage">
         <div className="y-playlist">
           <PictureShow picture={picture} />
@@ -82,7 +85,9 @@ follow on https://soundcloud.com/
           <div>
             <button disabled={isLoading} onClick={addFilesDialog}>Open</button>
             <button disabled={isLoading} onClick={startConvert}>Convert</button>
-            <button disabled={isLoading} onClick={convertAndUploadClick}>Convert and Upload</button>
+            <button disabled={isLoading || !useLoginHook.isLoggedIn}
+                  title={useLoginHook.isLoggedIn ? undefined : 'Please log in first'}
+                  onClick={convertAndUploadClick}>Convert and Upload</button>
           </div>
         </div>
         <div className="y-settings">
@@ -131,8 +136,8 @@ follow on https://soundcloud.com/
 
 
 
-function LoginBar(props: {showMockData: boolean, isLoading: boolean, setIsLoading: (e: boolean) => void}): JSX.Element {
-  const {isLoggedIn, username, loginError, login} = useLogin(props);
+function LoginBar(props: {useLoginHook: UseLogin}): JSX.Element {
+  const {isLoggedIn, username, loginError, login} = props.useLoginHook;
   const usernameEl = isLoggedIn && <div className="y-username">@{username}</div>;
   const loginButton = !isLoggedIn && <button className="y-login-button " type="button" onClick={login}>Login</button>
   const loginErrorEl = loginError && <div className="y-login-error">Login error: {loginError}</div>
