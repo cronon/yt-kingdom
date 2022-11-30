@@ -36,7 +36,6 @@ function useLogs() {
 }
 
 const Main = () => {
-  console.log(window.electronApi)
   const showMockData = window.electronApi.isDebug === false ?
     false :
     true
@@ -69,13 +68,24 @@ follow on https://soundcloud.com/
   const [successModalShown, setSuccessModalShow] = useState(false);
   const [ytResponse, setYtResponse] = useState({songIds: [] as string[], albumId: '', playlistId: ''});
   const useLoginHook = useLogin({isLoading, setIsLoading, showMockData});
-
+  const withLoading = async (cb: () => Promise<void>) => {
+    try {
+      setIsLoading(true);
+      return await cb()
+    } finally {
+      setIsLoading(false);
+    }
+  }
+  const startConvertClick = () => withLoading(startConvert)
   const convertAndUploadClick = async () => {
-    const isLoggedIn = await useLoginHook.checkLogin();
-    if (!isLoggedIn) return;
-    const response = await convertAndUpload({uploadSongs, createPlaylist});
-    setYtResponse(response);
-    setSuccessModalShow(true);
+    withLoading(async () => {
+      const isLoggedIn = await useLoginHook.checkLogin();
+      if (!isLoggedIn) return;
+      const response = await convertAndUpload({uploadSongs, createPlaylist});
+      setIsLoading(false);
+      setYtResponse(response);
+      setSuccessModalShow(true);
+    })
   }
 
   return (
@@ -89,7 +99,7 @@ follow on https://soundcloud.com/
           <Songlist songs={songs} setSongs={setSongs}/>
           <div>
             <button disabled={isLoading} onClick={addFilesDialog}>Open</button>
-            <button disabled={isLoading} onClick={startConvert}>Convert</button>
+            <button disabled={isLoading} onClick={startConvertClick}>Convert</button>
             <button disabled={isLoading || !useLoginHook.isLoggedIn}
                   title={useLoginHook.isLoggedIn ? undefined : 'Please log in first'}
                   onClick={convertAndUploadClick}>Convert and Upload</button>

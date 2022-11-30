@@ -10,7 +10,7 @@ interface UseFiles {
   setSongs: (songs: Song[]) => void;
   addFilesDialog: () => void;
   picture: Picture;
-  startConvert: () => void;
+  startConvert: () => Promise<void>;
   convertAndUpload: (params: {uploadSongs: boolean, createPlaylist: boolean}) => Promise<{songIds: string[], albumId: string, playlistId: string}>;
 
   songTemplate: string;
@@ -136,20 +136,14 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
   }
 
   async function startConvert() {
-    setIsLoading(true);
-    try {
-      for (const song of songs) {
-        setStatus('Converting song '+song.title, 'inprogress');
-        await window.electronApi.convertSong({song, picture}, status => setStatus(status, 'inprogress'));
-      }
-    } finally {
-      setStatus('Idle', 'done')
-      setIsLoading(false);
+    for (const song of songs) {
+      setStatus('Converting song '+song.title, 'inprogress');
+      await window.electronApi.convertSong({song, picture}, status => setStatus(status, 'inprogress'));
     }
   }
 
   async function convertAndUpload({uploadSongs, createPlaylist}: {uploadSongs: boolean, createPlaylist: boolean}){
-    setIsLoading(true);
+    !!songs[0] && setStatus('Converting song '+songs[0].title, 'inprogress');
     const login = await window.electronApi.getChannel();
     if (!login) throw new Error(`Youtube login got expired, please log in again.`);
     try {
@@ -216,8 +210,7 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
         songIds, albumId, playlistId
       }
     } finally {
-      setStatus('Idle', 'done')
-      setIsLoading(false);
+      setStatus('Idle', 'done');
     }
 
   }
