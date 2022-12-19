@@ -39,6 +39,9 @@ const electronApi = {
   async youtubeLogin(): Promise<{username: string, loginError: string | null}> {
     return ipcRenderer.invoke('youtubeLogin')
   },
+  async youtubeLogout(): Promise<{error: string | null}> {
+    return ipcRenderer.invoke('youtubeLogout')
+  },
 
   async youtubeUpload(params: {mp4Path: string, title: string, description: string}, onProgress: OnProgress): Promise<{id: string, err: string | null}> {
     const cb = (_, bytes: string) => onProgress(bytes);

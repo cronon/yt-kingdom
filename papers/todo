@@ -1,44 +1,52 @@
 unsorted
-auto close tab after redirect
+
 --
-where to store client id when distributing app
-e2e test
-show error logs in the UI
-read about logs and switch to el.log 1h
+new features:
+  quit the login tab x2
+  update title and favicon
+  clean temp folder x2
+  try reading tags, so it won't show numbers in front of the filenames
+  run without env vars x2
+  speed is only 2x or even lower for 1120x1200 image can it be faster?
+  more understandable update notification and update installation x2
+  you can start converting right away and change details during convertion
+  drag and drop
+  show user avatar from Youtube. items.snippet.thumbnails has an array of links
+  try to avoid reconverting in concatenation step
+  cancel button during inprogress x2
+  modal keybard and a11y
+  maybe show the contents of the temp folder and save there a json in order not to convert again if YT error
+
+surely bugs
+  when you move mouse between rows, exactly in between rows the cursor changes to default, it is annoying
+  chevron up and down in show logs is ugly on win x2
+  on a wide screen the dimensions number is far away from the pic
+  jumping japanese charachters in .y-progressbar {
+  during login, just close the page with youtube login. Actual: app stays frozen, expected: app should not be frozen
+
+possible bugs
 https://www.electronjs.org/docs/latest/tutorial/security 1h
   remove unsafe-inline
 check out npm audit 2h
-on a wide screen the dimensions number is far away from the pic
-show logs double chevron icon is ugly on win8
-drag and drop
-cancel button during inprogress+1
-show total progress in percents
-try reading tags, so it won't show numbers in front of the filenames
-
-try to avoid reconverting in concatenation step
-
-more understandable update notification and update installation
-
-jumping japanese charachters in .y-progressbar {
-clean temp folder 15m - not a single command
-
-have a global storage of data, methods, separate logs and status
-success screen: maybe add uploaded ids to the global storage with songs
-
-show user avatar from Youtube. items.snippet.thumbnails has an array of links
-
-maybe show the contents of the temp folder and save there a json in order not to convert again if YT error
-
-modal keybard and a11y
-
 deal with the warning on startup 15m
 
+tech debt:
+  e2e test
+  googleAuth todo comment "check if it'll work" - understand what is it and check
+  split big UI component into smaller components
+  and css
+  split big useFiles code into smaller pieces x2
+
+  read about logs and switch to el.log 1h
 use a class for Time - doesn't hurt anything right now, but Martin Fowler insists on it
   + became necessary when calculating percents
 
 
 ##### done #####
+feature: logout button
 
+add artist name to song video name - no the title is without artist
+don't log the creds
 success screen: add youtube studio link
 menu improvements
 use percent for convert

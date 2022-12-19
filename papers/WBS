@@ -8,13 +8,8 @@ generate videos
 	CRUD + sortable songs list
 		sortable list 30m
 		delete all 15m
+where to store client_secret
 
-upload to youtube
-	upload videos
-    where to store client_secret
-		youtube permissions for bigger quota
-			ask youtube for the bigger quota ? 2h-2d
-				waiting for insturctions
 
 16h in total ~ 2d
 + 4d debugging = 6d
@@ -87,6 +82,11 @@ upload to youtube
 			ask youtube for the bigger quota ? 2h-2d
 				read their requirements 10m
         	create youtube playlist
+      upload to youtube
+        upload videos
+          youtube permissions for bigger quota
+            ask youtube for the bigger quota ? 2h-2d
+              waiting for insturctions
 		create playlist code 30m ? haven't tried it yet
       success message
         code 10m

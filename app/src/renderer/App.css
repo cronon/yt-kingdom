@@ -62,6 +62,9 @@ button:hover {
 .y-login-button {
 
 }
+.y-logout-button {
+  margin-left: .5rem;
+}
 .y-login-error {
   color: var(--error-color);
 }
@@ -103,14 +106,19 @@ button:hover {
   margin: .5rem 0;
   border: 1px solid white;
 }
-.y-album-name {
+.y-album-name,
+.y-song-name-template {
   display: flex;
   align-items: center;
   margin-top: 1rem;
 }
-.y-album-name input {
+.y-album-name input,
+.y-song-name-template input {
   flex-grow: 1;
   margin-left: .5rem;
+}
+.y-song-name-preview {
+  margin-bottom: .5rem;
 }
 .y-album-preview {
   margin-top: .5rem;

@@ -2,13 +2,14 @@
 import { OnProgress } from 'common';
 import fs from 'fs';
 import { google, youtube_v3 } from 'googleapis';
-import { authenticate, createAuth } from './googleAuth';
+import { authenticate, createAuth, removeTokens } from './googleAuth';
 import { logger } from './logger';
 
 
 export function youtubeLogic(ipcMain: Electron.IpcMain, send: (channel: string, ...args: any[]) => void) {
   ipcMain.handle('getChannel', getChannel)
   ipcMain.handle('youtubeLogin', youtubeLogin);
+  ipcMain.handle('youtubeLogout', youtubeLogout);
   ipcMain.handle('youtubeUpload', (event, args) => {
     const onProgress = (uploadPercent: string) => send('youtubeUploadProgress', uploadPercent);
     return youtubeUpload(args, onProgress)
@@ -70,6 +71,17 @@ async function youtubeLogin(): Promise<{username: string, loginError: string | n
   ]);
   const {username, loginError} = await getUsername();
   return {username, loginError}
+}
+
+async function youtubeLogout(): Promise<{error: null | string}> {
+  const {client, isLoggedIn} = await createAuth();
+  try {
+    await client.refreshAccessToken()
+    await removeTokens();
+  } catch(e: any) {
+    return {error: e.toString()}
+  }
+  return {error: null}
 }
 
 async function youtubeUpload({mp4Path, title, description}: {mp4Path: string, title: string, description: string}, onProgress: OnProgress): Promise<{id: string, err: string | null}> {

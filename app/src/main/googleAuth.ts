@@ -6,18 +6,9 @@ import os from 'os';
 import keytar from 'keytar';
 const destroyer = require('server-destroy');
 import {AddressInfo} from 'net';
-import { app } from 'electron';
-import path from 'path';
+
 import { getKeys } from './config';
 
-const invalidRedirectUri = `The provided keyfile does not define a valid
-redirect URI. There must be at least one redirect URI defined, and this sample
-assumes it redirects to 'http://localhost:3000/oauth2callback'.  Please edit
-your keyfile, and add a 'redirect_uris' section.  For example:
-"redirect_uris": [
-  "http://localhost:3000/oauth2callback"
-]
-`;
 
 
 
@@ -32,6 +23,10 @@ async function saveTokens(params: {refresh_token: string, access_token: string})
   await keytar.setPassword(keytarRefreshToken, keytarAccount, params.refresh_token);
   await keytar.setPassword(keytarAccessToken, keytarAccount, params.access_token);
 }
+export async function removeTokens(): Promise<void> {
+  await keytar.deletePassword(keytarRefreshToken, keytarAccount);
+  await keytar.deletePassword(keytarAccessToken, keytarAccount);
+}
 async function retrieveTokens(): Promise<{refresh_token: string | null, access_token: string | null}> {
   const refresh_token = await keytar.getPassword(keytarRefreshToken, keytarAccount);
   const access_token = await keytar.getPassword(keytarAccessToken, keytarAccount);
@@ -39,7 +34,9 @@ async function retrieveTokens(): Promise<{refresh_token: string | null, access_t
 }
 
 
-
+/**
+ * Creates auth client. If we already have refresh_token stored in keytar, it will use it.
+ */
 export async function createAuth(): Promise<{client: OAuth2Client, isLoggedIn: boolean}> {
   const keys = getKeys();
   const client = new OAuth2Client({
@@ -92,7 +89,6 @@ export async function authenticate(client: OAuth2Client, scopes: string[]): Prom
         }
 
         const code = searchParams.get('code');
-        console.log('GOT CODE', code)
         const {tokens} = await client.getToken({
           code: code!,
           redirect_uri: redirectUri.toString(),

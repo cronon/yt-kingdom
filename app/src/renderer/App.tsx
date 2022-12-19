@@ -43,14 +43,15 @@ const Main = () => {
   const [isLoading, setIsLoading] = useState(defaultData.isLoading);
   const {songs, setSongs, addFilesDialog, picture, startConvert, convertAndUpload,
     songTemplate, setSongTemplate, songPreview,
+    songNameTemplate, setSongNameTemplate, songNamePreview,
     albumTemplate, setAlbumTemplate, albumPreview,
     albumName, setAlbumName,
     uploadAlbum, setUploadAlbum,
     status, setStatus
   } = useFiles({isLoading, setIsLoading, showMockData});
 
-  const songTemplatePlaceholder = `Artist - %track%
-Ablum (2022)
+  const songNameTemplatePlaceholder = 'Artist - %track%';
+  const songTemplatePlaceholder = `Ablum (2022)
 
 #music #electronic
 follow on https://soundcloud.com/
@@ -110,10 +111,20 @@ follow on https://soundcloud.com/
           <div >
             <label>Upload separate songs: <input type="checkbox" checked={uploadSongs} onChange={e => setUploadSongs(e.target.checked)} /></label>
             {uploadSongs && <><div className="y-song-settings">
-                <label>
-                  <div>Song description template</div>
-                  <textarea value={songTemplate} rows={6} placeholder={songTemplatePlaceholder} onChange={e => setSongTemplate(e.target.value)} />
-                </label>
+                <div className="y-song-name-template">
+                  <label>
+                    <span>Song name template</span>
+                    <input value={songNameTemplate}placeholder={songNameTemplatePlaceholder} onChange={e => setSongNameTemplate(e.target.value)} />
+                  </label>
+                </div>
+                <div className="y-song-name-preview">{songNamePreview}</div>
+
+                <div>
+                  <label>
+                    <div>Song description template</div>
+                    <textarea value={songTemplate} rows={6} placeholder={songTemplatePlaceholder} onChange={e => setSongTemplate(e.target.value)} />
+                  </label>
+                </div>
               </div>
               <div>Preview:</div>
               <div className="y-song-preview">{songPreview}</div>
@@ -153,17 +164,18 @@ follow on https://soundcloud.com/
 
 
 function LoginBar(props: {useLoginHook: UseLogin}): JSX.Element {
-  const {isLoggedIn, username, loginError, login} = props.useLoginHook;
+  const {isLoggedIn, username, loginError, login, logout} = props.useLoginHook;
   const usernameEl = isLoggedIn && <div className="y-username">@{username}</div>;
-  const loginButton = !isLoggedIn && <button className="y-login-button " type="button" onClick={login}>Login</button>
+  const loginButton = !isLoggedIn && <button className="y-login-button " type="button" onClick={login}>Log in</button>
+  const logoutButton = isLoggedIn && <button className="y-logout-button" type="button" onClick={logout}>Log out</button>
   const loginErrorEl = loginError && <div className="y-login-error">Login error: {loginError}</div>
   return <div className="y-login-bar">
     {usernameEl}
     {loginErrorEl}
     {loginButton}
+    {logoutButton}
   </div>
 }
-
 
 
 const zIndexes = {

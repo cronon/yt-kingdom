@@ -17,6 +17,10 @@ interface UseFiles {
   setSongTemplate: (newSongTemplate: string) => void;
   songPreview: string;
 
+  songNameTemplate: string;
+  setSongNameTemplate: (newSongTemplate: string) => void;
+  songNamePreview: string;
+
   albumName: string;
   setAlbumName: (newAlbumName: string) => void;
   albumTemplate: string;
@@ -58,8 +62,8 @@ function getDefaultData(showMockData: boolean) {
         duration: '00:00:27',
       }] as Song[],
       picture: {ext: 'png', base64: '', path: cPath + 'cover.jpg'},
-      songTemplate: `Kiara - %track%
-Mustard seed (2021)
+      songNameTemplate: 'Kiara - %track%',
+      songTemplate: `Mustard seed (2021)
 
 https://soundcloud.com/kiarabirth`,
       albumName: 'Kiara - Mustard seed (2021)',
@@ -73,8 +77,8 @@ https://soundcloud.com/kiarabirth`,
       isLoading: false,
       songs: [],
       picture: {ext: 'png', base64: '', path: './assets/emptyCover.jpg'},
-      songTemplate: `Artist - %track%
-Ablum (2022)
+      songNameTemplate: '%track%',
+      songTemplate: `Ablum (2022)
 
 #music #electronic
 follow on https://soundcloud.com/`,
@@ -92,6 +96,10 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
   const defaultData = getDefaultData(showMockData);
   const [songs, setSongs] = useState<Song[]>(defaultData.songs);
   const [picture, setPicture] = useState<Picture>(defaultData.picture);
+
+  const [songNameTemplate, setSongNameTemplate] = useState(defaultData.songNameTemplate);
+  const getSongNamePreview = (song: Song) => songNameTemplate.replaceAll('%track%', song.title);
+  const songNamePreview = songs.length === 0 ? songNameTemplate : getSongNamePreview(songs[0]);
 
   const [songTemplate, setSongTemplate] = useState(defaultData.songTemplate);
   const getSongPreview = (song: Song) =>  songTemplate.replaceAll('%track%', song.title);
@@ -150,7 +158,8 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
     if (!login) throw new Error(`Youtube login got expired, please log in again.`);
     try {
       const songsWithMp4: [string, Song][] = []
-      for (const song of songs) {
+      for (const _song of songs) {
+        const song = {..._song, title: getSongNamePreview(_song)}
         setStatus('Converting song '+song.title, 'inprogress');
         const mp4Path = await window.electronApi.convertSong({song, picture}, status => setStatus(status, 'inprogress'))
         songsWithMp4.push([mp4Path, song]);
@@ -219,6 +228,7 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
 
   return {songs, setSongs, addFilesDialog, picture, startConvert, convertAndUpload,
     songTemplate, setSongTemplate, songPreview,
+    songNameTemplate, setSongNameTemplate, songNamePreview,
     albumTemplate, setAlbumTemplate, albumPreview,
     albumName, setAlbumName, uploadAlbum, setUploadAlbum,
     status: status, setStatus

@@ -5,7 +5,8 @@ export interface UseLogin {
   username: string;
   isLoggedIn: boolean;
   loginError: string | null,
-  login: () => void;
+  login: () => Promise<void>;
+  logout: () => Promise<void>
   checkLogin: () => Promise<boolean>;
   channelId: string;
 }
@@ -71,6 +72,21 @@ export function useLogin({isLoading, setIsLoading, showMockData}: {showMockData:
       }
     })
   }
-  return {isLoggedIn, username, loginError, login, checkLogin, channelId}
+  async function logout(): Promise<void> {
+    setIsLoading(true);
+    setLoginError(null);
+    const {error} = await window.electronApi.youtubeLogout();
+    setIsLoading(false);
+    if (error) {
+      setLoginError(error);
+    } else {
+      setUsername('');
+      setChannelId('')
+      setIsLoggedIn(false);
+      localStorage.removeItem('username');
+    }
+
+  }
+  return {isLoggedIn, username, loginError, login, checkLogin, channelId, logout}
 
 }
