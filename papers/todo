@@ -1,9 +1,8 @@
 unsorted
-
+  update favicon
 --
 new features:
-  quit the login tab x2
-  update title and favicon
+
   clean temp folder x2
   try reading tags, so it won't show numbers in front of the filenames
   run without env vars x2
@@ -29,6 +28,7 @@ https://www.electronjs.org/docs/latest/tutorial/security 1h
   remove unsafe-inline
 check out npm audit 2h
 deal with the warning on startup 15m
+use shell.openPath instead of npm://open package
 
 tech debt:
   e2e test
@@ -43,6 +43,9 @@ use a class for Time - doesn't hurt anything right now, but Martin Fowler insist
 
 
 ##### done #####
+feature: customize title
+feature: quit the login tab x2
+  Quit the login tab is impossible due to security reasons. It is also impossible to setup redirect url to a custom scheme to redirect successful login to the electron app
 feature: logout button
 
 add artist name to song video name - no the title is without artist
