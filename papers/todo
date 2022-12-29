@@ -36,7 +36,8 @@ tech debt:
   googleAuth todo comment "check if it'll work" - understand what is it and check
   split big UI component into smaller components
   and css
-  split big useFiles code into smaller pieces x2
+  split big useFiles code into smaller pieces x3
+  don't deal with paths in frontend
 
   read about logs and switch to el.log 1h
 use a class for Time - doesn't hurt anything right now, but Martin Fowler insists on it
@@ -44,6 +45,7 @@ use a class for Time - doesn't hurt anything right now, but Martin Fowler insist
 
 
 ##### done #####
+feature: upload files assuming videos exist
 feature: customize title
 feature: quit the login tab x2
   Quit the login tab is impossible due to security reasons. It is also impossible to setup redirect url to a custom scheme to redirect successful login to the electron app

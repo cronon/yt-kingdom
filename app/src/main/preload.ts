@@ -16,7 +16,8 @@ const electronApi = {
     })
   },
 
-  async convertSong(params: {song: Song, picture: Picture},  onProgress: OnProgress): Promise<string> {
+  async convertSong(params: {song: Song, picture: Picture, dryRun?: boolean},  onProgress: OnProgress): Promise<string> {
+    params.dryRun = params.dryRun || false;
     const cb = (_, file: string) => onProgress(file);
     ipcRenderer.on('convertSongProgress', cb)
     return ipcRenderer.invoke('convertSong', params).finally(() => {

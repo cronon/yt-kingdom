@@ -41,8 +41,10 @@ export function filesLogic(ipcMain: Electron.IpcMain, send: (channel: string, ..
   });
 
 
-  ipcMain.handle('convertSong', async (event, args: {song: Song, picture: Picture}) => {
+  ipcMain.handle('convertSong', async (event, args: {dryRun: boolean, song: Song, picture: Picture}) => {
     const {song, picture} = args;
+    if (args.dryRun) return mp3PathToMp4(song.path);
+
     logger.info('Start converting song', JSON.stringify(song));
     const onProgress = (status: string) => send('convertSongProgress', status);
     const mp4Path = await convertSong(song.path, picture.path, onProgress)
@@ -91,10 +93,16 @@ async function concatVideos(mp4Paths: string[], onProgress: OnProgress): Promise
   return totalFilePath;
 }
 
+function mp3PathToMp4(pathMp3: string): string {
+  const songName = path.basename(pathMp3);
+  const mp4Path = tempFolder.tempPath(songName+'.mp4');
+  return mp4Path;
+}
+
 const defaultPicture = path.join(appFolder, 'assets/emptyCover.jpg');
 async function convertSong(songPath: string, picturePath: string = defaultPicture, onProgress: OnProgress): Promise<string> {
   const songName = path.basename(songPath);
-  const mp4Path = tempFolder.tempPath(songName+'.mp4');
+  const mp4Path = mp3PathToMp4(songPath);
   const duration = await readMp3(songPath);
   await ffmpegCommand([
     '-loop', '1',

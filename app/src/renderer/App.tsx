@@ -41,7 +41,7 @@ const Main = () => {
     true
   const defaultData = getDefaultData(showMockData);
   const [isLoading, setIsLoading] = useState(defaultData.isLoading);
-  const {songs, setSongs, addFilesDialog, picture, startConvert, convertAndUpload,
+  const {songs, setSongs, addFilesDialog, picture, startConvert, convertAndUpload, upload,
     songTemplate, setSongTemplate, songPreview,
     songNameTemplate, setSongNameTemplate, songNamePreview,
     albumTemplate, setAlbumTemplate, albumPreview,
@@ -78,6 +78,17 @@ follow on https://soundcloud.com/
     }
   }
   const startConvertClick = () => withLoading(startConvert)
+  const uploadClick = async () => {
+    withLoading(async () => {
+      setStatus('Checking Youtube Login', 'inprogress');
+      const isLoggedIn = await useLoginHook.checkLogin();
+      if (!isLoggedIn) return;
+      const response = await upload({uploadSongs, createPlaylist});
+      setIsLoading(false);
+      setYtResponse(response);
+      setSuccessModalShow(true);
+    })
+  }
   const convertAndUploadClick = async () => {
     withLoading(async () => {
       setStatus('Checking Youtube Login', 'inprogress');
@@ -99,9 +110,12 @@ follow on https://soundcloud.com/
         <div className="y-playlist">
           <PictureShow picture={picture} />
           <Songlist songs={songs} setSongs={setSongs}/>
-          <div>
+          <div className="y-action-buttons">
             <button disabled={isLoading} onClick={addFilesDialog}>Open</button>
             <button disabled={isLoading} onClick={startConvertClick}>Convert</button>
+            <button disabled={isLoading || !useLoginHook.isLoggedIn}
+                title={useLoginHook.isLoggedIn ? undefined : 'Please log in first'}
+                onClick={uploadClick}>Upload</button>
             <button disabled={isLoading || !useLoginHook.isLoggedIn}
                   title={useLoginHook.isLoggedIn ? undefined : 'Please log in first'}
                   onClick={convertAndUploadClick}>Convert and Upload</button>

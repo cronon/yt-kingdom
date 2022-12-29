@@ -12,6 +12,7 @@ interface UseFiles {
   picture: Picture;
   startConvert: () => Promise<void>;
   convertAndUpload: (params: {uploadSongs: boolean, createPlaylist: boolean}) => Promise<{songIds: string[], albumId: string, playlistId: string}>;
+  upload: (params: {uploadSongs: boolean, createPlaylist: boolean}) => Promise<{songIds: string[], albumId: string, playlistId: string}>;
 
   songTemplate: string;
   setSongTemplate: (newSongTemplate: string) => void;
@@ -152,6 +153,66 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
     setStatus('Idle', 'done');
   }
 
+  async function upload({uploadSongs, createPlaylist}: {uploadSongs: boolean, createPlaylist: boolean}){
+    !!songs[0] && setStatus('Uploading '+songs[0].title, 'inprogress');
+    const login = await window.electronApi.getChannel();
+    if (!login) throw new Error(`Youtube login got expired, please log in again.`);
+    try {
+      const songsWithMp4: [string, Song][] = await Promise.all(songs.map(async s => {
+        const song = {...s, title: getSongNamePreview(s)}
+        const mp4Path = await window.electronApi.convertSong({song: s, picture: null as any, dryRun: true}, status => setStatus(status, 'inprogress'))
+        return [mp4Path, song]
+      }));
+
+      let albumMp4 = 'temp/total.mp4';
+      const songIds: string[] = [];
+      if (uploadSongs) {
+        for (const songWithMp4 of songsWithMp4) {
+          console.log('UPload song with MP$', songWithMp4)
+          const title = songWithMp4[1].title;
+          const description = getSongPreview(songWithMp4[1]);
+          const mp4Path = songWithMp4[0];
+          setStatus('Uploading ' + title, 'inprogress')
+          const onProgress = (uploadPercent: string) => setStatus(uploadPercent+' Uploading ' + title, 'inprogress')
+          const res = await window.electronApi.youtubeUpload({mp4Path, title, description}, onProgress);
+          if (res.err) {
+            throw new Error(res.err)
+          } else {
+            songIds.push(res.id)
+          }
+          console.log('uploaded', res)
+        }
+        setStatus('Idle', 'done');
+      }
+      let albumId = '';
+
+      if (uploadAlbum) {
+        setStatus('Uploading album video', 'inprogress')
+        const onProgress = (uploadPercent: string) => setStatus(uploadPercent + ' Uploading album video', 'inprogress')
+        const albumUploadRes = await window.electronApi.youtubeUpload({
+          mp4Path: albumMp4,
+          title: albumName,
+          description: albumPreview
+        }, onProgress);
+        albumId = albumUploadRes.id;
+        setStatus('Idle', 'done');
+      }
+      let playlistId = '';
+      if (createPlaylist) {
+        setStatus('Creating playlist', 'inprogress')
+        const playlistRes = await window.electronApi.youtubeCreatePlaylist({videoIds: songIds, name: albumName})
+        playlistId = playlistRes.id;
+        setStatus('Idle', 'done');
+      }
+
+      return {
+        songIds, albumId, playlistId
+      }
+    } finally {
+      setStatus('Idle', 'done');
+    }
+  }
+
   async function convertAndUpload({uploadSongs, createPlaylist}: {uploadSongs: boolean, createPlaylist: boolean}){
     !!songs[0] && setStatus('Converting song '+songs[0].title, 'inprogress');
     const login = await window.electronApi.getChannel();
@@ -223,10 +284,9 @@ export function useFiles({isLoading, setIsLoading, showMockData}: {showMockData:
     } finally {
       setStatus('Idle', 'done');
     }
-
   }
 
-  return {songs, setSongs, addFilesDialog, picture, startConvert, convertAndUpload,
+  return {songs, setSongs, addFilesDialog, picture, startConvert, convertAndUpload, upload,
     songTemplate, setSongTemplate, songPreview,
     songNameTemplate, setSongNameTemplate, songNamePreview,
     albumTemplate, setAlbumTemplate, albumPreview,

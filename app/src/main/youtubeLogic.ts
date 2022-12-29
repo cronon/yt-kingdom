@@ -134,6 +134,8 @@ async function youtubeCreatePlaylist({videoIds, name}: {videoIds: string[], name
   });
   console.log('Created playlist', playlistRes)
 
+  console.log(videoIds);
+
   const playlistId = playlistRes.data.id!;
   for (const videoId of videoIds) {
     const res = await youtube.playlistItems.insert({
