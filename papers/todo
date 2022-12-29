@@ -31,6 +31,7 @@ deal with the warning on startup 15m
 use shell.openPath instead of npm://open package
 
 tech debt:
+  use git lfs or download ffmpeg binaries by a script from their website
   e2e test
   googleAuth todo comment "check if it'll work" - understand what is it and check
   split big UI component into smaller components
