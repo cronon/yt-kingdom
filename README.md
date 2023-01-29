@@ -6,3 +6,9 @@ YT_PROJECT_ID
 YT_CLIENT_SECRET
 
 before running the app
+
+
+to create a relase
+  update version in release/app/package.json
+  create a draft release on github
+  run npm run publish
